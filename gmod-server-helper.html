@@ -451,10 +451,50 @@ function hideError(){
   els.errorBox.textContent = '';
 }
 
-async function fetchViaProxy(targetUrl){
-  const res = await fetch(CORS_PROXY + encodeURIComponent(targetUrl));
-  if (!res.ok) throw new Error('proxy_http_' + res.status);
-  return res.text();
+const CORS_PROXIES = [
+  (url) => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
+  (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+];
+
+async function fetchViaProxy(targetUrl, retries = 2){
+  let lastError = null;
+  
+  for (let attempt = 0; attempt < retries; attempt++){
+    for (const buildProxyUrl of CORS_PROXIES){
+      const proxyUrl = buildProxyUrl(targetUrl);
+      try {
+        const res = await fetch(proxyUrl, {
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest' // некоторые прокси требуют это
+          }
+        });
+        
+        if (!res.ok) throw new Error('proxy_http_' + res.status);
+        
+        const text = await res.text();
+        
+        // Проверяем, не вернул ли прокси ошибку вместо реального контента
+        if (text.includes('Error') && text.includes('allorigins') && text.length < 500){
+          throw new Error('proxy_error_response');
+        }
+        
+        return text;
+      } catch (err){
+        lastError = err;
+        console.warn(`Proxy failed (attempt ${attempt + 1}):`, proxyUrl, err.message);
+        // Пробуем следующий прокси
+        continue;
+      }
+    }
+    
+    // Если все прокси не сработали — небольшая пауза перед retry
+    if (attempt < retries - 1){
+      await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
+    }
+  }
+  
+  throw lastError || new Error('all_proxies_failed');
 }
 
 async function fetchCollectionItems(collectionId){
@@ -655,18 +695,19 @@ async function runScan(){
 
     els.statusBox.classList.remove('show');
     els.results.classList.add('show');
-  }catch(err){
-    els.statusBox.classList.remove('show');
-    if (err.message === 'not_found'){
-      showError('Коллекция не найдена, удалена или недоступна. Проверь ссылку/ID.');
-    } else if (err.message === 'empty_collection'){
-      showError('На странице не найдено ни одного аддона. Убедись, что ссылка ведёт именно на коллекцию, а не на отдельный аддон.');
-    } else {
-      showError('Не получилось загрузить данные через публичный CORS‑прокси (он мог временно ограничить запросы). Подожди немного и попробуй снова.');
-    }
-  }finally{
-    els.scanBtn.disabled = false;
-    els.scanBtn.textContent = '▶ Анализировать';
+} catch(err){
+  els.statusBox.classList.remove('show');
+  if (err.message === 'not_found'){
+    showError('Коллекция не найдена, удалена или недоступна. Проверь ссылку/ID.');
+  } else if (err.message === 'empty_collection'){
+    showError('На странице не найдено ни одного аддона. Убедись, что ссылка ведёт именно на коллекцию, а не на отдельный аддон.');
+  } else if (err.message === 'all_proxies_failed'){
+    showError('Все CORS-прокси временно недоступны. Открой DevTools (F12) → Console, чтобы увидеть детали, и попробуй через 1–2 минуты.');
+  } else if (err.message && err.message.startsWith('proxy_http_')){
+    const status = err.message.replace('proxy_http_', '');
+    showError(`HTTP-ошибка от прокси (код ${status}). Steam мог временно ограничить доступ или страница недоступна.`);
+  } else {
+    showError(`Ошибка загрузки: ${err.message}. Проверь интернет-соединение и попробуй снова.`);
   }
 }
 
