@@ -4,26 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GMod Server Helper — Collection Helper</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#111319;
-    --bg-soft:#161923;
-    --panel:#1B1F2B;
-    --panel-2:#20242F;
-    --border:#2B303D;
-    --border-soft:#242833;
-    --text:#E7E9F0;
-    --text-dim:#9299AB;
-    --text-faint:#5D6377;
-    --yellow:#F5C518;
-    --orange:#FF7A29;
-    --red:#FF4F5E;
-    --green:#39D98A;
-    --blue:#4FA3FF;
-    --mono: 'JetBrains Mono', monospace;
-    --disp: 'Rajdhani', sans-serif;
+    --bg:#111319; --bg-soft:#161923; --panel:#1B1F2B; --panel-2:#20242F;
+    --border:#2B303D; --border-soft:#242833;
+    --text:#E7E9F0; --text-dim:#9299AB; --text-faint:#5D6377;
+    --yellow:#F5C518; --orange:#FF7A29; --red:#FF4F5E; --green:#39D98A; --blue:#4FA3FF;
+    --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+    --disp:'Rajdhani','Segoe UI',system-ui,sans-serif;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -32,218 +20,85 @@
       radial-gradient(1200px 600px at 100% -10%, rgba(255,122,41,0.07), transparent 60%),
       radial-gradient(900px 500px at -10% 110%, rgba(79,163,255,0.06), transparent 60%),
       var(--bg);
-    color:var(--text);
-    font-family:var(--mono);
-    min-height:100vh;
-    -webkit-font-smoothing:antialiased;
+    color:var(--text); font-family:var(--mono); min-height:100vh; -webkit-font-smoothing:antialiased;
   }
-  .app{
-    display:grid;
-    grid-template-columns:230px 1fr;
-    min-height:100vh;
-  }
-  @media (max-width:760px){
-    .app{grid-template-columns:1fr;}
-    .sidebar{display:none;}
-    .mobile-tabbar{display:flex !important;}
-  }
+  .app{display:grid;grid-template-columns:230px 1fr;min-height:100vh;}
+  @media (max-width:760px){ .app{grid-template-columns:1fr;} .sidebar{display:none;} .mobile-tabbar{display:flex !important;} }
 
-  /* ---------- sidebar ---------- */
-  .sidebar{
-    background:var(--bg-soft);
-    border-right:1px solid var(--border);
-    padding:22px 16px;
-    display:flex;
-    flex-direction:column;
-    gap:22px;
-  }
-  .brand{
-    display:flex; align-items:center; gap:10px;
-  }
-  .brand-mark{
-    width:34px;height:34px;border-radius:7px;
-    background:linear-gradient(135deg,var(--orange),var(--yellow));
-    display:flex;align-items:center;justify-content:center;
-    font-family:var(--disp);font-weight:700;color:#161923;font-size:16px;
-    flex:none;
-  }
+  .sidebar{background:var(--bg-soft);border-right:1px solid var(--border);padding:22px 16px;display:flex;flex-direction:column;gap:22px;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-mark{width:34px;height:34px;border-radius:7px;background:linear-gradient(135deg,var(--orange),var(--yellow));display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:700;color:#161923;font-size:16px;flex:none;}
   .brand-text{font-family:var(--disp);}
   .brand-text b{display:block;font-size:15px;font-weight:700;letter-spacing:.2px;}
   .brand-text span{display:block;font-size:11px;color:var(--text-faint);letter-spacing:.4px;text-transform:uppercase;}
-
-  .hazard{
-    height:4px;border-radius:2px;
-    background:repeating-linear-gradient(135deg,var(--yellow) 0 8px,#161923 8px 16px);
-    opacity:.85;
-  }
-
+  .hazard{height:4px;border-radius:2px;background:repeating-linear-gradient(135deg,var(--yellow) 0 8px,#161923 8px 16px);opacity:.85;}
   .nav-label{font-size:10.5px;letter-spacing:1.2px;color:var(--text-faint);text-transform:uppercase;font-family:var(--disp);font-weight:600;margin:2px 2px 0;}
   .nav{display:flex;flex-direction:column;gap:4px;}
-  .nav-item{
-    display:flex;align-items:center;gap:10px;
-    padding:9px 10px;border-radius:8px;
-    font-size:13px;color:var(--text-dim);
-    border:1px solid transparent;
-    cursor:default;
-  }
-  .nav-item.active{
-    background:var(--panel);
-    border-color:var(--border);
-    color:var(--text);
-  }
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;font-size:13px;color:var(--text-dim);border:1px solid transparent;cursor:default;}
+  .nav-item.active{background:var(--panel);border-color:var(--border);color:var(--text);}
   .nav-item.active .dot{background:var(--green);box-shadow:0 0 0 3px rgba(57,217,138,.15);}
   .nav-item .dot{width:6px;height:6px;border-radius:50%;background:var(--text-faint);flex:none;}
   .nav-item.soon{opacity:.5;}
-  .nav-item .soon-tag{
-    margin-left:auto;font-size:9px;letter-spacing:.5px;
-    background:var(--panel-2);border:1px solid var(--border);
-    padding:2px 6px;border-radius:20px;color:var(--text-faint);
-  }
-
+  .nav-item .soon-tag{margin-left:auto;font-size:9px;letter-spacing:.5px;background:var(--panel-2);border:1px solid var(--border);padding:2px 6px;border-radius:20px;color:var(--text-faint);}
   .sidebar-foot{margin-top:auto;font-size:11px;color:var(--text-faint);line-height:1.6;}
-  .sidebar-foot a{color:var(--text-faint);}
 
-  /* mobile tabbar */
-  .mobile-tabbar{
-    display:none;
-    background:var(--bg-soft);border-bottom:1px solid var(--border);
-    padding:12px 16px;align-items:center;gap:10px;
-  }
+  .mobile-tabbar{display:none;background:var(--bg-soft);border-bottom:1px solid var(--border);padding:12px 16px;align-items:center;gap:10px;}
 
-  /* ---------- main ---------- */
   main{padding:32px 36px 60px;max-width:1180px;}
   @media (max-width:760px){ main{padding:20px 16px 40px;} }
-
   .page-head{margin-bottom:22px;}
-  .eyebrow{
-    font-family:var(--disp);font-size:11px;letter-spacing:1.6px;text-transform:uppercase;
-    color:var(--orange);font-weight:600;margin-bottom:6px;
-  }
-  h1{
-    font-family:var(--disp);font-weight:700;font-size:30px;margin:0 0 6px;letter-spacing:.2px;
-  }
+  .eyebrow{font-family:var(--disp);font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--orange);font-weight:600;margin-bottom:6px;}
+  h1{font-family:var(--disp);font-weight:700;font-size:30px;margin:0 0 6px;letter-spacing:.2px;}
   .lede{color:var(--text-dim);font-size:13.5px;max-width:640px;line-height:1.6;margin:0;}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px;}
 
-  .panel{
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:14px;
-    padding:20px;
-  }
-
-  /* input row */
-  .input-row{
-    display:flex;gap:10px;margin-top:22px;flex-wrap:wrap;
-  }
-  .input-wrap{
-    flex:1 1 380px;position:relative;
-  }
-  .input-wrap input{
-    width:100%;
-    background:var(--bg-soft);
-    border:1px solid var(--border);
-    border-radius:10px;
-    color:var(--text);
-    font-family:var(--mono);
-    font-size:13.5px;
-    padding:13px 14px;
-    outline:none;
-    transition:border-color .15s;
-  }
+  .input-row{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap;}
+  .input-wrap{flex:1 1 380px;position:relative;}
+  .input-wrap input{width:100%;background:var(--bg-soft);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--mono);font-size:13.5px;padding:13px 14px;outline:none;transition:border-color .15s;}
   .input-wrap input:focus{border-color:var(--orange);}
   .input-wrap input::placeholder{color:var(--text-faint);}
-  .btn{
-    font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:.3px;
-    border:none;border-radius:10px;padding:0 22px;
-    background:linear-gradient(135deg,var(--orange),#ff9a52);
-    color:#191305;cursor:pointer;
-    display:flex;align-items:center;gap:8px;
-    transition:filter .15s, transform .1s;
-  }
+  .btn{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:.3px;border:none;border-radius:10px;padding:0 22px;background:linear-gradient(135deg,var(--orange),#ff9a52);color:#191305;cursor:pointer;display:flex;align-items:center;gap:8px;transition:filter .15s, transform .1s;min-height:46px;}
   .btn:hover{filter:brightness(1.08);}
   .btn:active{transform:scale(.98);}
   .btn:disabled{opacity:.5;cursor:not-allowed;filter:none;}
-  .btn.ghost{
-    background:var(--panel-2);color:var(--text-dim);border:1px solid var(--border);
-    font-weight:600;font-size:12.5px;padding:0 14px;
-  }
+  .btn.ghost{background:var(--panel-2);color:var(--text-dim);border:1px solid var(--border);font-weight:600;font-size:12.5px;padding:0 14px;min-height:34px;}
   .btn.ghost:hover{color:var(--text);border-color:var(--text-faint);}
   .hint{font-size:11.5px;color:var(--text-faint);margin-top:9px;}
   .hint code{color:var(--text-dim);background:var(--bg-soft);padding:1px 5px;border-radius:4px;}
 
-  /* status / progress */
-  .status-box{
-    margin-top:18px;display:none;
-  }
+  .status-box{margin-top:18px;display:none;}
   .status-box.show{display:block;}
-  .status-line{
-    display:flex;justify-content:space-between;align-items:baseline;
-    font-size:12px;color:var(--text-dim);margin-bottom:8px;
-  }
+  .status-line{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;color:var(--text-dim);margin-bottom:8px;}
   .status-line b{color:var(--text);font-family:var(--disp);}
-  .progress-track{
-    height:8px;border-radius:5px;overflow:hidden;background:var(--bg-soft);border:1px solid var(--border-soft);
-  }
-  .progress-fill{
-    height:100%;
-    background:repeating-linear-gradient(135deg,var(--yellow) 0 10px,var(--orange) 10px 20px);
-    background-size:200% 100%;
-    width:0%;
-    transition:width .25s ease;
-    animation:barmove 1.1s linear infinite;
-  }
+  .progress-track{height:8px;border-radius:5px;overflow:hidden;background:var(--bg-soft);border:1px solid var(--border-soft);}
+  .progress-fill{height:100%;background:repeating-linear-gradient(135deg,var(--yellow) 0 10px,var(--orange) 10px 20px);background-size:200% 100%;width:0%;transition:width .25s ease;animation:barmove 1.1s linear infinite;}
   @keyframes barmove{ to{ background-position:-40px 0; } }
 
-  .error-box{
-    display:none;margin-top:16px;
-    background:rgba(255,79,94,.08);border:1px solid rgba(255,79,94,.35);
-    color:#ffb4bb;padding:12px 14px;border-radius:10px;font-size:12.5px;line-height:1.6;
-  }
+  .error-box{display:none;margin-top:16px;background:rgba(255,79,94,.08);border:1px solid rgba(255,79,94,.35);color:#ffb4bb;padding:12px 14px;border-radius:10px;font-size:12.5px;line-height:1.6;white-space:pre-wrap;}
   .error-box.show{display:block;}
 
-  /* results */
+  details.debug{margin-top:14px;}
+  details.debug summary{cursor:pointer;font-size:11px;color:var(--text-faint);font-family:var(--disp);letter-spacing:.5px;text-transform:uppercase;}
+  details.debug pre{margin:8px 0 0;background:var(--bg-soft);border:1px solid var(--border-soft);border-radius:8px;padding:10px;font-size:11px;color:var(--text-dim);max-height:180px;overflow:auto;white-space:pre-wrap;}
+
   #results{display:none;margin-top:30px;}
   #results.show{display:block;}
-
-  .stat-grid{
-    display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;
-  }
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
   @media (max-width:900px){ .stat-grid{grid-template-columns:repeat(2,1fr);} }
-  .stat{
-    background:var(--panel);border:1px solid var(--border);border-radius:12px;
-    padding:16px 16px 14px;
-  }
+  .stat{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 16px 14px;}
   .stat .label{font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;color:var(--text-faint);font-family:var(--disp);font-weight:600;}
   .stat .value{font-family:var(--disp);font-size:24px;font-weight:700;margin-top:6px;}
   .stat .value.accent{color:var(--orange);}
   .stat .sub{font-size:11px;color:var(--text-faint);margin-top:4px;}
+  .note{font-size:11.5px;color:var(--text-faint);line-height:1.6;border-left:2px solid var(--border);padding-left:10px;margin:0 0 22px;}
 
-  .note{
-    font-size:11.5px;color:var(--text-faint);line-height:1.6;
-    border-left:2px solid var(--border);padding-left:10px;margin:0 0 22px;
-  }
-
-  .table-toolbar{
-    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;
-    margin-bottom:10px;
-  }
+  .table-toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px;}
   .table-toolbar .left{font-family:var(--disp);font-size:13px;color:var(--text-dim);}
   .table-toolbar .left b{color:var(--text);}
   .toolbar-actions{display:flex;gap:8px;}
-
-  .table-wrap{
-    border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--panel);
-  }
+  .table-wrap{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--panel);}
   table{width:100%;border-collapse:collapse;font-size:12.5px;}
-  thead th{
-    text-align:left;
-    background:var(--panel-2);
-    color:var(--text-dim);
-    font-family:var(--disp);font-size:11px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;
-    padding:11px 14px;border-bottom:1px solid var(--border);
-    cursor:pointer;user-select:none;
-    white-space:nowrap;
-  }
+  thead th{text-align:left;background:var(--panel-2);color:var(--text-dim);font-family:var(--disp);font-size:11px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;padding:11px 14px;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;white-space:nowrap;}
   thead th:hover{color:var(--text);}
   thead th .arrow{opacity:.4;margin-left:4px;font-size:10px;}
   thead th.active .arrow{opacity:1;color:var(--orange);}
@@ -260,21 +115,12 @@
   td.bar-cell{width:180px;}
   .bar-track{height:7px;background:var(--bg-soft);border-radius:4px;overflow:hidden;border:1px solid var(--border-soft);}
   .bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--orange),var(--yellow));}
-  .tag{
-    font-size:10px;padding:2px 7px;border-radius:20px;letter-spacing:.3px;
-    border:1px solid var(--border);color:var(--text-faint);
-  }
+  .tag{font-size:10px;padding:2px 7px;border-radius:20px;letter-spacing:.3px;border:1px solid var(--border);color:var(--text-faint);}
   .tag.warn{color:#ffcf7a;border-color:rgba(255,207,122,.35);background:rgba(255,207,122,.06);}
   .tag.bad{color:#ffb4bb;border-color:rgba(255,79,94,.35);background:rgba(255,79,94,.06);}
-
   footer.page-foot{margin-top:34px;font-size:11px;color:var(--text-faint);line-height:1.7;}
-  footer.page-foot a{color:var(--text-faint);}
-
   ::selection{background:rgba(255,122,41,.3);}
-
-  @media (prefers-reduced-motion: reduce){
-    .progress-fill{animation:none;}
-  }
+  @media (prefers-reduced-motion: reduce){ .progress-fill{animation:none;} }
 </style>
 </head>
 <body>
@@ -291,7 +137,6 @@
       <div class="brand-text"><b>Server Helper</b><span>Toolkit for admins</span></div>
     </div>
     <div class="hazard"></div>
-
     <div>
       <div class="nav-label">Инструменты</div>
       <div class="nav" style="margin-top:8px;">
@@ -301,10 +146,7 @@
         <div class="nav-item soon"><span class="dot"></span> Оценка нагрузки <span class="soon-tag">скоро</span></div>
       </div>
     </div>
-
-    <div class="sidebar-foot">
-      Данные о размерах берутся напрямую из Steam Web API через публичный CORS‑прокси. Для очень больших коллекций сканирование может занять минуту.
-    </div>
+    <div class="sidebar-foot">Данные о размерах берутся напрямую из Steam Web API через публичные CORS‑прокси (с автопереключением).</div>
   </aside>
 
   <main>
@@ -317,7 +159,7 @@
     <div class="panel">
       <div class="input-row">
         <div class="input-wrap">
-          <input id="collectionInput" type="text" placeholder="https://steamcommunity.com/sharedfiles/filedetails/?id=3714605224  или  3714605224" />
+          <input id="collectionInput" type="text" placeholder="https://steamcommunity.com/sharedfiles/filedetails/?id=...  или  просто ID" />
         </div>
         <button class="btn" id="scanBtn">▶ Анализировать</button>
       </div>
@@ -329,33 +171,22 @@
       </div>
 
       <div class="error-box" id="errorBox"></div>
+
+      <details class="debug">
+        <summary>Журнал отладки</summary>
+        <pre id="debugLog"></pre>
+      </details>
     </div>
 
     <div id="results">
       <div class="stat-grid">
-        <div class="stat">
-          <div class="label">Аддонов в коллекции</div>
-          <div class="value" id="statCount">—</div>
-          <div class="sub" id="statCountSub"></div>
-        </div>
-        <div class="stat">
-          <div class="label">Суммарный вес</div>
-          <div class="value accent" id="statTotal">—</div>
-          <div class="sub">к загрузке при подписке на всё</div>
-        </div>
-        <div class="stat">
-          <div class="label">Займёт на диске</div>
-          <div class="value" id="statInstalled">—</div>
-          <div class="sub">после установки на сервер*</div>
-        </div>
-        <div class="stat">
-          <div class="label">Самый тяжёлый</div>
-          <div class="value" id="statBiggest" style="font-size:15px;line-height:1.3;">—</div>
-          <div class="sub" id="statBiggestSize"></div>
-        </div>
+        <div class="stat"><div class="label">Аддонов в коллекции</div><div class="value" id="statCount">—</div><div class="sub" id="statCountSub"></div></div>
+        <div class="stat"><div class="label">Суммарный вес</div><div class="value accent" id="statTotal">—</div><div class="sub">к загрузке при подписке на всё</div></div>
+        <div class="stat"><div class="label">Займёт на диске</div><div class="value" id="statInstalled">—</div><div class="sub">после установки на сервер*</div></div>
+        <div class="stat"><div class="label">Самый тяжёлый</div><div class="value" id="statBiggest" style="font-size:15px;line-height:1.3;">—</div><div class="sub" id="statBiggestSize"></div></div>
       </div>
 
-      <p class="note">* Аддоны мастерской хранятся как есть (.gma), без распаковки — поэтому вес при загрузке и место на диске после установки практически совпадают. Небольшая погрешность возможна за счёт кеша превью и служебных файлов Steam.</p>
+      <p class="note">* Аддоны мастерской хранятся как есть (.gma), без распаковки — поэтому вес при загрузке и место на диске после установки практически совпадают.</p>
 
       <div class="table-toolbar">
         <div class="left"><b id="tblCount">0</b> аддонов в таблице · клик по заголовку сортирует</div>
@@ -383,39 +214,42 @@
     </div>
 
     <footer class="page-foot">
-      GMod Server Helper · Collection Helper v1 — первый инструмент в наборе. Размеры получены через публичный Steam Web API (ISteamRemoteStorage/GetPublishedFileDetails).<br>
+      GMod Server Helper · Collection Helper v2 — размеры через публичный Steam Web API (ISteamRemoteStorage/GetPublishedFileDetails).<br>
       Скрытые, забаненные или удалённые аддоны не имеют публичного размера — они помечаются отдельно и не входят в сумму.
     </footer>
   </main>
 </div>
 
 <script>
-const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+'use strict';
 
+const CORS_PROXIES = [
+  (u) => 'https://corsproxy.io/?url=' + encodeURIComponent(u),
+  (u) => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
+  (u) => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u),
+];
+
+const $ = (id) => document.getElementById(id);
 const els = {
-  input: document.getElementById('collectionInput'),
-  scanBtn: document.getElementById('scanBtn'),
-  statusBox: document.getElementById('statusBox'),
-  statusText: document.getElementById('statusText'),
-  statusCount: document.getElementById('statusCount'),
-  progressFill: document.getElementById('progressFill'),
-  errorBox: document.getElementById('errorBox'),
-  results: document.getElementById('results'),
-  statCount: document.getElementById('statCount'),
-  statCountSub: document.getElementById('statCountSub'),
-  statTotal: document.getElementById('statTotal'),
-  statInstalled: document.getElementById('statInstalled'),
-  statBiggest: document.getElementById('statBiggest'),
-  statBiggestSize: document.getElementById('statBiggestSize'),
-  tblCount: document.getElementById('tblCount'),
-  tbody: document.getElementById('tbody'),
-  sortDescBtn: document.getElementById('sortDescBtn'),
-  sortAscBtn: document.getElementById('sortAscBtn'),
-  exportBtn: document.getElementById('exportBtn'),
+  input: $('collectionInput'), scanBtn: $('scanBtn'),
+  statusBox: $('statusBox'), statusText: $('statusText'), statusCount: $('statusCount'), progressFill: $('progressFill'),
+  errorBox: $('errorBox'), debugLog: $('debugLog'),
+  results: $('results'),
+  statCount: $('statCount'), statCountSub: $('statCountSub'), statTotal: $('statTotal'),
+  statInstalled: $('statInstalled'), statBiggest: $('statBiggest'), statBiggestSize: $('statBiggestSize'),
+  tblCount: $('tblCount'), tbody: $('tbody'),
+  sortDescBtn: $('sortDescBtn'), sortAscBtn: $('sortAscBtn'), exportBtn: $('exportBtn'),
 };
 
 let currentItems = [];
 let currentSort = { key: 'size', dir: 'desc' };
+
+function log(msg){
+  const line = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+  console.log(line);
+  els.debugLog.textContent += line + '\n';
+  els.debugLog.scrollTop = els.debugLog.scrollHeight;
+}
 
 function extractId(raw){
   const s = (raw || '').trim();
@@ -431,15 +265,14 @@ function bytesToSize(bytes){
   const units = ['Б','КБ','МБ','ГБ','ТБ'];
   let i = 0, v = bytes;
   while (v >= 1024 && i < units.length - 1){ v /= 1024; i++; }
-  return `${v.toFixed(v >= 100 || i === 0 ? 0 : 2)} ${units[i]}`;
+  return v.toFixed(v >= 100 || i === 0 ? 0 : 2) + ' ' + units[i];
 }
 
 function setStatus(text, done, total){
   els.statusBox.classList.add('show');
   els.statusText.textContent = text;
-  els.statusCount.textContent = (total ? `${done} / ${total}` : '');
-  const pct = total ? Math.min(100, (done/total)*100) : 5;
-  els.progressFill.style.width = pct + '%';
+  els.statusCount.textContent = (total ? done + ' / ' + total : '');
+  els.progressFill.style.width = (total ? Math.min(100, (done/total)*100) : 5) + '%';
 }
 
 function showError(msg){
@@ -451,55 +284,34 @@ function hideError(){
   els.errorBox.textContent = '';
 }
 
-const CORS_PROXIES = [
-  (url) => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
-  (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-  (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-];
-
-async function fetchViaProxy(targetUrl, retries = 2){
+async function fetchViaProxy(targetUrl, validate){
   let lastError = null;
-  
-  for (let attempt = 0; attempt < retries; attempt++){
-    for (const buildProxyUrl of CORS_PROXIES){
-      const proxyUrl = buildProxyUrl(targetUrl);
-      try {
-        const res = await fetch(proxyUrl, {
-          headers: {
-            'X-Requested-With': 'XMLHttpRequest' // некоторые прокси требуют это
-          }
-        });
-        
-        if (!res.ok) throw new Error('proxy_http_' + res.status);
-        
-        const text = await res.text();
-        
-        // Проверяем, не вернул ли прокси ошибку вместо реального контента
-        if (text.includes('Error') && text.includes('allorigins') && text.length < 500){
-          throw new Error('proxy_error_response');
-        }
-        
-        return text;
-      } catch (err){
-        lastError = err;
-        console.warn(`Proxy failed (attempt ${attempt + 1}):`, proxyUrl, err.message);
-        // Пробуем следующий прокси
-        continue;
-      }
-    }
-    
-    // Если все прокси не сработали — небольшая пауза перед retry
-    if (attempt < retries - 1){
-      await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
+  for (const build of CORS_PROXIES){
+    const proxyUrl = build(targetUrl);
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 20000);
+    try{
+      log('запрос через ' + proxyUrl.slice(0, 45) + '…');
+      const res = await fetch(proxyUrl, { signal: ctrl.signal });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const text = await res.text();
+      if (!text || text.length < 50) throw new Error('пустой ответ');
+      if (validate && !validate(text)) throw new Error('прокси вернул не страницу Steam');
+      log('ок, получено ' + text.length + ' байт');
+      return text;
+    }catch(err){
+      log('FAIL: ' + err.message);
+      lastError = err;
+    }finally{
+      clearTimeout(timer);
     }
   }
-  
-  throw lastError || new Error('all_proxies_failed');
+  throw lastError || new Error('все прокси недоступны');
 }
 
 async function fetchCollectionItems(collectionId){
-  const pageUrl = `https://steamcommunity.com/sharedfiles/filedetails/?id=${collectionId}`;
-  const html = await fetchViaProxy(pageUrl);
+  const pageUrl = 'https://steamcommunity.com/sharedfiles/filedetails/?id=' + collectionId;
+  const html = await fetchViaProxy(pageUrl, (t) => t.includes('steamcommunity') || t.includes('workshopItem'));
   const doc = new DOMParser().parseFromString(html, 'text/html');
 
   const bodyText = doc.body ? doc.body.textContent : '';
@@ -508,11 +320,9 @@ async function fetchCollectionItems(collectionId){
     throw new Error('not_found');
   }
 
-  const titleEls = doc.querySelectorAll('.workshopItemTitle');
   const items = [];
   const seen = new Set();
-
-  titleEls.forEach(titleEl => {
+  doc.querySelectorAll('.workshopItemTitle').forEach((titleEl) => {
     const a = titleEl.closest('a');
     if (!a) return;
     const href = a.getAttribute('href') || '';
@@ -532,7 +342,7 @@ async function fetchCollectionItems(collectionId){
   });
 
   if (items.length === 0) throw new Error('empty_collection');
-
+  log('найдено аддонов на странице: ' + items.length);
   return items;
 }
 
@@ -543,15 +353,15 @@ async function fetchSizes(ids, onProgress){
     const chunk = ids.slice(i, i + CHUNK);
     const params = new URLSearchParams();
     params.set('itemcount', String(chunk.length));
-    chunk.forEach((id, idx) => params.set(`publishedfileids[${idx}]`, id));
-    const apiUrl = `https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/?${params.toString()}`;
+    chunk.forEach((id, idx) => params.set('publishedfileids[' + idx + ']', id));
+    const apiUrl = 'https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/?' + params.toString();
 
     let text;
     try{
-      text = await fetchViaProxy(apiUrl);
+      text = await fetchViaProxy(apiUrl, (t) => t.trim().startsWith('{'));
     }catch(e){
       onProgress(Math.min(i + CHUNK, ids.length), ids.length);
-      continue; // skip this batch, keep going with the rest
+      continue;
     }
 
     let data;
@@ -559,39 +369,37 @@ async function fetchSizes(ids, onProgress){
     catch(e){ onProgress(Math.min(i + CHUNK, ids.length), ids.length); continue; }
 
     const details = (data && data.response && data.response.publishedfiledetails) || [];
-    details.forEach(d => { map[d.publishedfileid] = d; });
+    details.forEach((d) => { map[d.publishedfileid] = d; });
 
     onProgress(Math.min(i + CHUNK, ids.length), ids.length);
-    await new Promise(r => setTimeout(r, 120));
+    await new Promise((r) => setTimeout(r, 150));
   }
   return map;
 }
 
 function mergeData(items, sizeMap){
-  return items.map(it => {
+  return items.map((it) => {
     const d = sizeMap[it.id];
     if (!d || Number(d.result) !== 1){
-      return { ...it, size: 0, status: 'unavailable' };
+      return Object.assign({}, it, { size: 0, status: 'unavailable' });
     }
-    const numChildren = Number(d.num_children || 0);
-    const isCollection = numChildren > 0 || Number(d.file_type) === 2;
+    const isCollection = Number(d.num_children || 0) > 0 || Number(d.file_type) === 2;
     const banned = Number(d.banned) === 1;
-    return {
-      ...it,
+    return Object.assign({}, it, {
       title: d.title || it.title,
       size: Number(d.file_size) || 0,
       status: banned ? 'banned' : (isCollection ? 'collection' : 'ok'),
-    };
+    });
   });
 }
 
 function renderStats(items){
-  const ok = items.filter(i => i.status === 'ok');
+  const ok = items.filter((i) => i.status === 'ok');
   const total = ok.reduce((s, i) => s + i.size, 0);
   const skipped = items.length - ok.length;
 
   els.statCount.textContent = items.length;
-  els.statCountSub.textContent = skipped ? `${skipped} без данных о размере` : 'у всех есть данные о размере';
+  els.statCountSub.textContent = skipped ? skipped + ' без данных о размере' : 'у всех есть данные о размере';
   els.statTotal.textContent = bytesToSize(total);
   els.statInstalled.textContent = bytesToSize(total);
 
@@ -612,6 +420,10 @@ function statusTag(status){
   return '<span class="tag bad">нет данных</span>';
 }
 
+function escapeHtml(s){
+  return (s || '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
 function renderTable(items){
   const sorted = items.slice().sort((a, b) => {
     let av = a[currentSort.key], bv = b[currentSort.key];
@@ -622,34 +434,27 @@ function renderTable(items){
     return currentSort.dir === 'asc' ? av - bv : bv - av;
   });
 
-  const maxSize = Math.max(1, ...items.map(i => i.size));
+  const maxSize = Math.max(1, ...items.map((i) => i.size));
   els.tblCount.textContent = items.length;
 
   els.tbody.innerHTML = sorted.map((it, idx) => {
     const pct = Math.max(2, Math.round((it.size / maxSize) * 100));
-    const url = `https://steamcommunity.com/sharedfiles/filedetails/?id=${it.id}`;
-    return `
-      <tr>
-        <td class="rank">${idx + 1}</td>
-        <td class="name">
-          <a href="${url}" target="_blank" rel="noopener">${escapeHtml(it.title)}</a>
-          ${it.author ? `<span class="author">${escapeHtml(it.author)}</span>` : ''}
-        </td>
-        <td class="size">${bytesToSize(it.size)}</td>
-        <td class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${it.status==='ok' ? pct : 2}%;"></div></div></td>
-        <td>${statusTag(it.status)}</td>
-      </tr>`;
+    const url = 'https://steamcommunity.com/sharedfiles/filedetails/?id=' + it.id;
+    return '<tr>' +
+      '<td class="rank">' + (idx + 1) + '</td>' +
+      '<td class="name"><a href="' + url + '" target="_blank" rel="noopener">' + escapeHtml(it.title) + '</a>' +
+        (it.author ? '<span class="author">' + escapeHtml(it.author) + '</span>' : '') + '</td>' +
+      '<td class="size">' + bytesToSize(it.size) + '</td>' +
+      '<td class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:' + (it.status === 'ok' ? pct : 2) + '%;"></div></div></td>' +
+      '<td>' + statusTag(it.status) + '</td>' +
+    '</tr>';
   }).join('');
 
-  document.querySelectorAll('thead th[data-key]').forEach(th => {
+  document.querySelectorAll('thead th[data-key]').forEach((th) => {
     th.classList.toggle('active', th.dataset.key === currentSort.key);
     const arrow = th.querySelector('.arrow');
     if (arrow) arrow.textContent = currentSort.dir === 'asc' ? '▴' : '▾';
   });
-}
-
-function escapeHtml(s){
-  return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
 function exportCsv(items){
@@ -657,7 +462,7 @@ function exportCsv(items){
   items.slice().sort((a,b) => b.size - a.size).forEach((it, idx) => {
     rows.push([idx+1, it.title, it.author || '', it.id, it.size, bytesToSize(it.size), it.status]);
   });
-  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const csv = rows.map((r) => r.map((v) => '"' + String(v).replace(/"/g,'""') + '"').join(',')).join('\n');
   const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -666,6 +471,7 @@ function exportCsv(items){
 }
 
 async function runScan(){
+  log('=== runScan, input: ' + els.input.value);
   hideError();
   els.results.classList.remove('show');
   const id = extractId(els.input.value);
@@ -673,6 +479,7 @@ async function runScan(){
     showError('Не удалось распознать ID коллекции. Вставь ссылку вида steamcommunity.com/sharedfiles/filedetails/?id=... или просто число.');
     return;
   }
+  log('id = ' + id);
 
   els.scanBtn.disabled = true;
   els.scanBtn.textContent = 'Сканирую…';
@@ -682,7 +489,7 @@ async function runScan(){
     const items = await fetchCollectionItems(id);
 
     setStatus('Получаю размеры аддонов…', 0, items.length);
-    const sizeMap = await fetchSizes(items.map(i => i.id), (done, total) => {
+    const sizeMap = await fetchSizes(items.map((i) => i.id), (done, total) => {
       setStatus('Получаю размеры аддонов…', done, total);
     });
 
@@ -695,30 +502,30 @@ async function runScan(){
 
     els.statusBox.classList.remove('show');
     els.results.classList.add('show');
-} catch(err){
-  els.statusBox.classList.remove('show');
-  if (err.message === 'not_found'){
-    showError('Коллекция не найдена, удалена или недоступна. Проверь ссылку/ID.');
-  } else if (err.message === 'empty_collection'){
-    showError('На странице не найдено ни одного аддона. Убедись, что ссылка ведёт именно на коллекцию, а не на отдельный аддон.');
-  } else if (err.message === 'all_proxies_failed'){
-    showError('Все CORS-прокси временно недоступны. Открой DevTools (F12) → Console, чтобы увидеть детали, и попробуй через 1–2 минуты.');
-  } else if (err.message && err.message.startsWith('proxy_http_')){
-    const status = err.message.replace('proxy_http_', '');
-    showError(`HTTP-ошибка от прокси (код ${status}). Steam мог временно ограничить доступ или страница недоступна.`);
-  } else {
-    showError(`Ошибка загрузки: ${err.message}. Проверь интернет-соединение и попробуй снова.`);
+    log('готово!');
+  }catch(err){
+    log('ОШИБКА: ' + (err && err.message ? err.message : err));
+    els.statusBox.classList.remove('show');
+    if (err.message === 'not_found'){
+      showError('Коллекция не найдена, удалена или недоступна. Проверь ссылку/ID.');
+    } else if (err.message === 'empty_collection'){
+      showError('На странице не найдено ни одного аддона. Убедись, что ссылка ведёт именно на коллекцию, а не на отдельный аддон.');
+    } else {
+      showError('Не получилось загрузить данные (' + err.message + '). Разверни «Журнал отладки» ниже и пришли скриншот.');
+    }
+  }finally{
+    els.scanBtn.disabled = false;
+    els.scanBtn.textContent = '▶ Анализировать';
   }
 }
 
+log('скрипт загружен, вешаю обработчики');
 els.scanBtn.addEventListener('click', runScan);
-els.input.addEventListener('keydown', e => { if (e.key === 'Enter') runScan(); });
-
+els.input.addEventListener('keydown', (e) => { if (e.key === 'Enter') runScan(); });
 els.sortDescBtn.addEventListener('click', () => { currentSort = { key:'size', dir:'desc' }; renderTable(currentItems); });
 els.sortAscBtn.addEventListener('click', () => { currentSort = { key:'size', dir:'asc' }; renderTable(currentItems); });
 els.exportBtn.addEventListener('click', () => exportCsv(currentItems));
-
-document.querySelectorAll('thead th[data-key]').forEach(th => {
+document.querySelectorAll('thead th[data-key]').forEach((th) => {
   th.addEventListener('click', () => {
     const key = th.dataset.key;
     if (currentSort.key === key){
@@ -729,9 +536,6 @@ document.querySelectorAll('thead th[data-key]').forEach(th => {
     renderTable(currentItems);
   });
 });
-
-// preload the example from the conversation
-els.input.value = 'https://steamcommunity.com/sharedfiles/filedetails/?id=3714605224';
 </script>
 </body>
 </html>
