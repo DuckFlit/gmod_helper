@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GMod Server Helper — Collection Helper</title>
+<title>GMod Server Helper</title>
 <style>
   :root{
     --bg:#111319; --bg-soft:#161923; --panel:#1B1F2B; --panel-2:#20242F;
@@ -34,15 +34,22 @@
   .hazard{height:4px;border-radius:2px;background:repeating-linear-gradient(135deg,var(--yellow) 0 8px,#161923 8px 16px);opacity:.85;}
   .nav-label{font-size:10.5px;letter-spacing:1.2px;color:var(--text-faint);text-transform:uppercase;font-family:var(--disp);font-weight:600;margin:2px 2px 0;}
   .nav{display:flex;flex-direction:column;gap:4px;}
-  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;font-size:13px;color:var(--text-dim);border:1px solid transparent;cursor:default;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;font-size:13px;color:var(--text-dim);border:1px solid transparent;}
+  .nav-item[data-view]{cursor:pointer;transition:background .12s,color .12s;}
+  .nav-item[data-view]:hover{color:var(--text);background:var(--panel);}
   .nav-item.active{background:var(--panel);border-color:var(--border);color:var(--text);}
   .nav-item.active .dot{background:var(--green);box-shadow:0 0 0 3px rgba(57,217,138,.15);}
   .nav-item .dot{width:6px;height:6px;border-radius:50%;background:var(--text-faint);flex:none;}
   .nav-item.soon{opacity:.5;}
   .nav-item .soon-tag{margin-left:auto;font-size:9px;letter-spacing:.5px;background:var(--panel-2);border:1px solid var(--border);padding:2px 6px;border-radius:20px;color:var(--text-faint);}
-  .sidebar-foot{margin-top:auto;font-size:11px;color:var(--text-faint);line-height:1.6;}
+
+  .lang-switch{display:flex;gap:6px;align-items:center;}
+  .lang-btn{font-family:var(--disp);font-weight:700;font-size:11px;letter-spacing:.5px;padding:4px 10px;border-radius:7px;border:1px solid var(--border);background:var(--panel);color:var(--text-faint);cursor:pointer;}
+  .lang-btn.active{color:#161923;background:linear-gradient(135deg,var(--orange),var(--yellow));border-color:transparent;}
+  .sidebar-foot{margin-top:auto;font-size:11px;color:var(--text-faint);line-height:1.6;display:flex;flex-direction:column;gap:12px;}
 
   .mobile-tabbar{display:none;background:var(--bg-soft);border-bottom:1px solid var(--border);padding:12px 16px;align-items:center;gap:10px;}
+  .mobile-tabbar select{margin-left:auto;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:6px 8px;font-family:var(--disp);font-size:12px;}
 
   main{padding:32px 36px 60px;max-width:1180px;}
   @media (max-width:760px){ main{padding:20px 16px 40px;} }
@@ -79,7 +86,7 @@
 
   details.debug{margin-top:14px;}
   details.debug summary{cursor:pointer;font-size:11px;color:var(--text-faint);font-family:var(--disp);letter-spacing:.5px;text-transform:uppercase;}
-  details.debug pre{margin:8px 0 0;background:var(--bg-soft);border:1px solid var(--border-soft);border-radius:8px;padding:10px;font-size:11px;color:var(--text-dim);max-height:180px;overflow:auto;white-space:pre-wrap;}
+  details.debug pre{margin:8px 0 0;background:var(--bg-soft);border:1px solid var(--border-soft);border-radius:8px;padding:10px;font-size:11px;color:var(--text-dim);max-height:160px;overflow:auto;white-space:pre-wrap;}
 
   #results{display:none;margin-top:30px;}
   #results.show{display:block;}
@@ -95,7 +102,7 @@
   .table-toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px;}
   .table-toolbar .left{font-family:var(--disp);font-size:13px;color:var(--text-dim);}
   .table-toolbar .left b{color:var(--text);}
-  .toolbar-actions{display:flex;gap:8px;}
+  .toolbar-actions{display:flex;gap:8px;flex-wrap:wrap;}
   .table-wrap{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--panel);}
   table{width:100%;border-collapse:collapse;font-size:12.5px;}
   thead th{text-align:left;background:var(--panel-2);color:var(--text-dim);font-family:var(--disp);font-size:11px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;padding:11px 14px;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;white-space:nowrap;}
@@ -118,9 +125,20 @@
   .tag{font-size:10px;padding:2px 7px;border-radius:20px;letter-spacing:.3px;border:1px solid var(--border);color:var(--text-faint);}
   .tag.warn{color:#ffcf7a;border-color:rgba(255,207,122,.35);background:rgba(255,207,122,.06);}
   .tag.bad{color:#ffb4bb;border-color:rgba(255,79,94,.35);background:rgba(255,79,94,.06);}
+
+  .lua-out{margin-top:20px;display:none;}
+  .lua-out.show{display:block;}
+  .lua-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+  .lua-head .left{font-family:var(--disp);font-size:13px;color:var(--text-dim);}
+  .lua-head .left b{color:var(--text);}
+  pre.lua{margin:0;background:var(--bg-soft);border:1px solid var(--border);border-radius:12px;padding:14px;font-size:12px;line-height:1.7;color:#c8e0c4;max-height:420px;overflow:auto;white-space:pre;}
+  .lua-path{font-size:11.5px;color:var(--text-faint);margin-top:10px;}
+  .lua-path code{color:var(--text-dim);background:var(--bg-soft);padding:1px 5px;border-radius:4px;}
+
   footer.page-foot{margin-top:34px;font-size:11px;color:var(--text-faint);line-height:1.7;}
   ::selection{background:rgba(255,122,41,.3);}
   @media (prefers-reduced-motion: reduce){ .progress-fill{animation:none;} }
+  [hidden]{display:none !important;}
 </style>
 </head>
 <body>
@@ -128,6 +146,10 @@
 <div class="mobile-tabbar">
   <div class="brand-mark">GM</div>
   <b style="font-family:var(--disp);font-size:14px;">GMod Server Helper</b>
+  <select id="viewSelect">
+    <option value="helper" data-i18n="tool_helper">Collection Helper</option>
+    <option value="lua" data-i18n="tool_lua">Workshop.lua генератор</option>
+  </select>
 </div>
 
 <div class="app">
@@ -137,116 +159,253 @@
       <div class="brand-text"><b>Server Helper</b><span>Toolkit for admins</span></div>
     </div>
     <div class="hazard"></div>
+
     <div>
-      <div class="nav-label">Инструменты</div>
+      <div class="nav-label" data-i18n="nav_tools">Инструменты</div>
       <div class="nav" style="margin-top:8px;">
-        <div class="nav-item active"><span class="dot"></span> Collection Helper</div>
-        <div class="nav-item soon"><span class="dot"></span> Проверка конфликтов <span class="soon-tag">скоро</span></div>
-        <div class="nav-item soon"><span class="dot"></span> server.cfg генератор <span class="soon-tag">скоро</span></div>
-        <div class="nav-item soon"><span class="dot"></span> Оценка нагрузки <span class="soon-tag">скоро</span></div>
+        <div class="nav-item active" data-view="helper"><span class="dot"></span> <span data-i18n="tool_helper">Collection Helper</span></div>
+        <div class="nav-item" data-view="lua"><span class="dot"></span> <span data-i18n="tool_lua">Workshop.lua генератор</span></div>
+        <div class="nav-item soon"><span class="dot"></span> <span data-i18n="tool_conflicts">Проверка конфликтов</span> <span class="soon-tag" data-i18n="soon">скоро</span></div>
+        <div class="nav-item soon"><span class="dot"></span> <span data-i18n="tool_cfg">server.cfg генератор</span> <span class="soon-tag" data-i18n="soon">скоро</span></div>
+        <div class="nav-item soon"><span class="dot"></span> <span data-i18n="tool_load">Оценка нагрузки</span> <span class="soon-tag" data-i18n="soon">скоро</span></div>
       </div>
     </div>
-    <div class="sidebar-foot">Данные о размерах берутся напрямую из Steam Web API через публичные CORS‑прокси (с автопереключением).</div>
+
+    <div class="sidebar-foot">
+      <div class="lang-switch">
+        <button class="lang-btn" id="langRu">RU</button>
+        <button class="lang-btn" id="langEn">EN</button>
+      </div>
+      <div data-i18n="side_foot">Данные о размерах берутся напрямую из Steam Web API через публичные CORS‑прокси. Для очень больших коллекций сканирование может занять минуту.</div>
+    </div>
   </aside>
 
   <main>
-    <div class="page-head">
-      <div class="eyebrow">Инструмент 01 — Collection Helper</div>
-      <h1>Сколько весит твоя коллекция?</h1>
-      <p class="lede">Вставь ссылку на коллекцию мастерской Garry's Mod или её ID — покажу вес каждого аддона, общий размер и дам отсортировать список по весу, чтобы найти, что жрёт место на сервере.</p>
-    </div>
+    <!-- ============ VIEW 1: COLLECTION HELPER ============ -->
+    <section id="view-helper">
+      <div class="page-head">
+        <div class="eyebrow" data-i18n="eyebrow_helper">Инструмент 01 — Collection Helper</div>
+        <h1 data-i18n="h1_helper">Сколько весит твоя коллекция?</h1>
+        <p class="lede" data-i18n="lede_helper">Вставь ссылку на коллекцию мастерской Garry's Mod или её ID — покажу вес каждого аддона, общий размер и дам отсортировать список по весу, чтобы найти, что жрёт место на сервере.</p>
+      </div>
 
-    <div class="panel">
-      <div class="input-row">
-        <div class="input-wrap">
-          <input id="collectionInput" type="text" placeholder="https://steamcommunity.com/sharedfiles/filedetails/?id=...  или  просто ID" />
+      <div class="panel">
+        <div class="input-row">
+          <div class="input-wrap">
+            <input id="collectionInput" type="text" data-i18n-ph="ph_input" placeholder="https://steamcommunity.com/sharedfiles/filedetails/?id=...  или  просто ID" />
+          </div>
+          <button class="btn" id="scanBtn" data-i18n="btn_scan">▶ Анализировать</button>
         </div>
-        <button class="btn" id="scanBtn">▶ Анализировать</button>
-      </div>
-      <div class="hint">Принимаю полную ссылку на коллекцию или просто её <code>id</code>. Работает только с коллекциями (не с отдельными аддонами).</div>
+        <div class="hint" data-i18n="hint_helper">Принимаю полную ссылку на коллекцию или просто её id. Работает только с коллекциями (не с отдельными аддонами).</div>
 
-      <div class="status-box" id="statusBox">
-        <div class="status-line"><span id="statusText">Подготовка…</span><b id="statusCount"></b></div>
-        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-      </div>
-
-      <div class="error-box" id="errorBox"></div>
-
-      <details class="debug">
-        <summary>Журнал отладки</summary>
-        <pre id="debugLog"></pre>
-      </details>
-    </div>
-
-    <div id="results">
-      <div class="stat-grid">
-        <div class="stat"><div class="label">Аддонов в коллекции</div><div class="value" id="statCount">—</div><div class="sub" id="statCountSub"></div></div>
-        <div class="stat"><div class="label">Суммарный вес</div><div class="value accent" id="statTotal">—</div><div class="sub">к загрузке при подписке на всё</div></div>
-        <div class="stat"><div class="label">Займёт на диске</div><div class="value" id="statInstalled">—</div><div class="sub">после установки на сервер*</div></div>
-        <div class="stat"><div class="label">Самый тяжёлый</div><div class="value" id="statBiggest" style="font-size:15px;line-height:1.3;">—</div><div class="sub" id="statBiggestSize"></div></div>
+        <div class="status-box" id="statusBox">
+          <div class="status-line"><span id="statusText">…</span><b id="statusCount"></b></div>
+          <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        </div>
+        <div class="error-box" id="errorBox"></div>
+        <details class="debug"><summary data-i18n="dbg">Журнал отладки</summary><pre class="debuglog"></pre></details>
       </div>
 
-      <p class="note">* Аддоны мастерской хранятся как есть (.gma), без распаковки — поэтому вес при загрузке и место на диске после установки практически совпадают.</p>
+      <div id="results">
+        <div class="stat-grid">
+          <div class="stat"><div class="label" data-i18n="stat_addons">Аддонов в коллекции</div><div class="value" id="statCount">—</div><div class="sub" id="statCountSub"></div></div>
+          <div class="stat"><div class="label" data-i18n="stat_total">Суммарный вес</div><div class="value accent" id="statTotal">—</div><div class="sub" data-i18n="stat_total_sub">к загрузке при подписке на всё</div></div>
+          <div class="stat"><div class="label" data-i18n="stat_disk">Займёт на диске</div><div class="value" id="statInstalled">—</div><div class="sub" data-i18n="stat_disk_sub">после установки на сервер*</div></div>
+          <div class="stat"><div class="label" data-i18n="stat_big">Самый тяжёлый</div><div class="value" id="statBiggest" style="font-size:15px;line-height:1.3;">—</div><div class="sub" id="statBiggestSize"></div></div>
+        </div>
 
-      <div class="table-toolbar">
-        <div class="left"><b id="tblCount">0</b> аддонов в таблице · клик по заголовку сортирует</div>
-        <div class="toolbar-actions">
-          <button class="btn ghost" id="sortDescBtn">Сначала тяжёлые</button>
-          <button class="btn ghost" id="sortAscBtn">Сначала лёгкие</button>
-          <button class="btn ghost" id="exportBtn">Экспорт CSV</button>
+        <p class="note" data-i18n="note_disk">* Аддоны мастерской хранятся как есть (.gma), без распаковки — поэтому вес при загрузке и место на диске после установки практически совпадают.</p>
+
+        <div class="table-toolbar">
+          <div class="left"><b id="tblCount">0</b> <span data-i18n="tbl_hint">аддонов в таблице · клик по заголовку сортирует</span></div>
+          <div class="toolbar-actions">
+            <button class="btn ghost" id="sortDescBtn" data-i18n="btn_desc">Сначала тяжёлые</button>
+            <button class="btn ghost" id="sortAscBtn" data-i18n="btn_asc">Сначала лёгкие</button>
+            <button class="btn ghost" id="exportBtn" data-i18n="btn_csv">Экспорт CSV</button>
+            <button class="btn ghost" id="toLuaBtn" data-i18n="btn_tolua">→ workshop.lua</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:34px;">#</th>
+                <th data-key="title"><span data-i18n="th_addon">Аддон</span> <span class="arrow">▾</span></th>
+                <th data-key="size" class="active"><span data-i18n="th_size">Вес</span> <span class="arrow">▾</span></th>
+                <th style="width:190px;"><span data-i18n="th_rel">Относительно самого крупного</span></th>
+                <th style="width:80px;"><span data-i18n="th_status">Статус</span></th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
         </div>
       </div>
 
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th style="width:34px;">#</th>
-              <th data-key="title">Аддон <span class="arrow">▾</span></th>
-              <th data-key="size" class="active">Вес <span class="arrow">▾</span></th>
-              <th style="width:190px;">Относительно самого крупного</th>
-              <th style="width:80px;">Статус</th>
-            </tr>
-          </thead>
-          <tbody id="tbody"></tbody>
-        </table>
-      </div>
-    </div>
+      <footer class="page-foot">
+        <div data-i18n="foot1">GMod Server Helper · Collection Helper — размеры через публичный Steam Web API (ISteamRemoteStorage/GetPublishedFileDetails).</div>
+        <div data-i18n="foot2">Скрытые, забаненные или удалённые аддоны не имеют публичного размера — они помечаются отдельно и не входят в сумму.</div>
+      </footer>
+    </section>
 
-    <footer class="page-foot">
-      GMod Server Helper · Collection Helper v2 — размеры через публичный Steam Web API (ISteamRemoteStorage/GetPublishedFileDetails).<br>
-      Скрытые, забаненные или удалённые аддоны не имеют публичного размера — они помечаются отдельно и не входят в сумму.
-    </footer>
+    <!-- ============ VIEW 2: WORKSHOP.LUA GENERATOR ============ -->
+    <section id="view-lua" hidden>
+      <div class="page-head">
+        <div class="eyebrow" data-i18n="eyebrow_lua">Инструмент 02 — Workshop.lua Generator</div>
+        <h1 data-i18n="h1_lua">workshop.lua в один клик</h1>
+        <p class="lede" data-i18n="lede_lua">Вставь ссылку на коллекцию или ID — получишь готовый файл со строками resource.AddWorkshop("id") -- Название для каждого аддона. Скачай его и закинь на сервер.</p>
+      </div>
+
+      <div class="panel">
+        <div class="input-row">
+          <div class="input-wrap">
+            <input id="luaInput" type="text" data-i18n-ph="ph_input" placeholder="https://steamcommunity.com/sharedfiles/filedetails/?id=...  или  просто ID" />
+          </div>
+          <button class="btn" id="genBtn" data-i18n="btn_gen">▶ Сгенерировать</button>
+        </div>
+        <div class="hint" data-i18n="hint_lua">Строки генерируются в порядке аддонов на странице коллекции. Вложенные коллекции разворачиваются только если они видны на странице.</div>
+
+        <div class="status-box" id="luaStatusBox">
+          <div class="status-line"><span id="luaStatusText">…</span><b id="luaStatusCount"></b></div>
+          <div class="progress-track"><div class="progress-fill" id="luaProgressFill"></div></div>
+        </div>
+        <div class="error-box" id="luaErrorBox"></div>
+        <details class="debug"><summary data-i18n="dbg">Журнал отладки</summary><pre class="debuglog"></pre></details>
+      </div>
+
+      <div class="lua-out" id="luaOut">
+        <div class="lua-head">
+          <div class="left"><b id="luaCount">0</b> <span data-i18n="lua_lines">строк resource.AddWorkshop</span></div>
+          <div class="toolbar-actions">
+            <button class="btn ghost" id="copyBtn" data-i18n="btn_copy">Копировать</button>
+            <button class="btn" id="dlBtn" style="min-height:34px;" data-i18n="btn_dl">Скачать workshop.lua</button>
+          </div>
+        </div>
+        <pre class="lua" id="luaPre"></pre>
+        <div class="lua-path" data-i18n="lua_path">Положи файл в <code>garrysmod/lua/autorun/server/workshop.lua</code> — сервер подтянет аддоны при старте.</div>
+      </div>
+    </section>
   </main>
 </div>
 
 <script>
 'use strict';
 
-/* Если развернёшь свой прокси на Cloudflare Workers (инструкция ниже) —
-   вставь его URL сюда, например 'https://my-proxy.workers.dev' */
+/* Если развернёшь свой прокси на Cloudflare Workers — вставь его URL сюда */
 const MY_PROXY = '';
 
+/* ================= i18n ================= */
+const L = {
+  ru: {
+    nav_tools:'Инструменты', tool_helper:'Collection Helper', tool_lua:'Workshop.lua генератор',
+    tool_conflicts:'Проверка конфликтов', tool_cfg:'server.cfg генератор', tool_load:'Оценка нагрузки', soon:'скоро',
+    side_foot:'Данные о размерах берутся напрямую из Steam Web API через публичные CORS‑прокси. Для очень больших коллекций сканирование может занять минуту.',
+    eyebrow_helper:'Инструмент 01 — Collection Helper', h1_helper:'Сколько весит твоя коллекция?',
+    lede_helper:'Вставь ссылку на коллекцию мастерской Garry\'s Mod или её ID — покажу вес каждого аддона, общий размер и дам отсортировать список по весу, чтобы найти, что жрёт место на сервере.',
+    ph_input:'https://steamcommunity.com/sharedfiles/filedetails/?id=...  или  просто ID',
+    btn_scan:'▶ Анализировать', scanning:'Сканирую…',
+    hint_helper:'Принимаю полную ссылку на коллекцию или просто её id. Работает только с коллекциями (не с отдельными аддонами).',
+    dbg:'Журнал отладки',
+    stat_addons:'Аддонов в коллекции', stat_total:'Суммарный вес', stat_total_sub:'к загрузке при подписке на всё',
+    stat_disk:'Займёт на диске', stat_disk_sub:'после установки на сервер*', stat_big:'Самый тяжёлый',
+    note_disk:'* Аддоны мастерской хранятся как есть (.gma), без распаковки — поэтому вес при загрузке и место на диске после установки практически совпадают.',
+    tbl_hint:'аддонов в таблице · клик по заголовку сортирует',
+    btn_desc:'Сначала тяжёлые', btn_asc:'Сначала лёгкие', btn_csv:'Экспорт CSV', btn_tolua:'→ workshop.lua',
+    th_addon:'Аддон', th_size:'Вес', th_rel:'Относительно самого крупного', th_status:'Статус',
+    foot1:'GMod Server Helper · Collection Helper — размеры через публичный Steam Web API (ISteamRemoteStorage/GetPublishedFileDetails).',
+    foot2:'Скрытые, забаненные или удалённые аддоны не имеют публичного размера — они помечаются отдельно и не входят в сумму.',
+    eyebrow_lua:'Инструмент 02 — Workshop.lua Generator', h1_lua:'workshop.lua в один клик',
+    lede_lua:'Вставь ссылку на коллекцию или ID — получишь готовый файл со строками resource.AddWorkshop("id") -- Название для каждого аддона. Скачай его и закинь на сервер.',
+    btn_gen:'▶ Сгенерировать', generating:'Генерирую…',
+    hint_lua:'Строки генерируются в порядке аддонов на странице коллекции. Вложенные коллекции разворачиваются только если они видны на странице.',
+    lua_lines:'строк resource.AddWorkshop', btn_copy:'Копировать', copied:'Скопировано ✓',
+    btn_dl:'Скачать workshop.lua',
+    lua_path:'Положи файл в <code>garrysmod/lua/autorun/server/workshop.lua</code> — сервер подтянет аддоны при старте.',
+    status_page:'Читаю страницу коллекции…', status_sizes:'Получаю размеры аддонов…',
+    sub_nodata:'без данных о размере', sub_allok:'у всех есть данные о размере',
+    tag_coll:'коллекция', tag_banned:'забанен', tag_nodata:'нет данных',
+    err_id:'Не удалось распознать ID коллекции. Вставь ссылку вида steamcommunity.com/sharedfiles/filedetails/?id=... или просто число.',
+    err_notfound:'Коллекция не найдена, удалена или недоступна. Проверь ссылку/ID.',
+    err_empty:'На странице не найдено ни одного аддона. Убедись, что ссылка ведёт именно на коллекцию, а не на отдельный аддон.',
+    err_proxies:'Не получилось загрузить данные через публичные CORS‑прокси. Подожди немного и попробуй снова, или поставь свой прокси (инструкция в коде страницы).',
+    err_sizes:'Список аддонов прочитан, но ни один прокси не пропустил POST‑запрос к Steam API. Попробуй через пару минут или поставь свой прокси на Cloudflare Workers (инструкция в коде страницы).',
+  },
+  en: {
+    nav_tools:'Tools', tool_helper:'Collection Helper', tool_lua:'Workshop.lua generator',
+    tool_conflicts:'Conflict checker', tool_cfg:'server.cfg generator', tool_load:'Load estimation', soon:'soon',
+    side_foot:'Sizes are fetched directly from the Steam Web API via public CORS proxies. Very large collections may take a minute to scan.',
+    eyebrow_helper:'Tool 01 — Collection Helper', h1_helper:'How heavy is your collection?',
+    lede_helper:'Paste a Garry\'s Mod Workshop collection link or its ID — see each addon\'s size, the total, and sort by weight to find what eats your server\'s disk.',
+    ph_input:'https://steamcommunity.com/sharedfiles/filedetails/?id=...  or just the ID',
+    btn_scan:'▶ Analyze', scanning:'Scanning…',
+    hint_helper:'Accepts a full collection link or just its id. Works with collections only (not single addons).',
+    dbg:'Debug log',
+    stat_addons:'Addons in collection', stat_total:'Total weight', stat_total_sub:'to download if subscribed to all',
+    stat_disk:'On-disk size', stat_disk_sub:'after installing on the server*', stat_big:'Heaviest',
+    note_disk:'* Workshop addons are stored as-is (.gma), no extraction — download size and on-disk size are practically the same.',
+    tbl_hint:'addons in the table · click a header to sort',
+    btn_desc:'Heaviest first', btn_asc:'Lightest first', btn_csv:'Export CSV', btn_tolua:'→ workshop.lua',
+    th_addon:'Addon', th_size:'Size', th_rel:'Relative to largest', th_status:'Status',
+    foot1:'GMod Server Helper · Collection Helper — sizes via the public Steam Web API (ISteamRemoteStorage/GetPublishedFileDetails).',
+    foot2:'Hidden, banned or deleted addons have no public size — they are tagged separately and excluded from the total.',
+    eyebrow_lua:'Tool 02 — Workshop.lua Generator', h1_lua:'workshop.lua in one click',
+    lede_lua:'Paste a collection link or ID — get a ready file with resource.AddWorkshop("id") -- Title lines for every addon. Download it and drop it on your server.',
+    btn_gen:'▶ Generate', generating:'Generating…',
+    hint_lua:'Lines follow the addon order on the collection page. Nested collections are expanded only if visible on the page.',
+    lua_lines:'resource.AddWorkshop lines', btn_copy:'Copy', copied:'Copied ✓',
+    btn_dl:'Download workshop.lua',
+    lua_path:'Put the file to <code>garrysmod/lua/autorun/server/workshop.lua</code> — the server will pull the addons on start.',
+    status_page:'Reading collection page…', status_sizes:'Fetching addon sizes…',
+    sub_nodata:'without size data', sub_allok:'all have size data',
+    tag_coll:'collection', tag_banned:'banned', tag_nodata:'no data',
+    err_id:'Could not recognize the collection ID. Paste a link like steamcommunity.com/sharedfiles/filedetails/?id=... or just a number.',
+    err_notfound:'Collection not found, deleted or unavailable. Check the link/ID.',
+    err_empty:'No addons found on the page. Make sure the link points to a collection, not a single addon.',
+    err_proxies:'Could not load data via public CORS proxies. Wait a bit and retry, or deploy your own proxy (instructions in the page source).',
+    err_sizes:'Addon list was read, but no proxy passed the POST request to the Steam API. Retry in a couple of minutes or deploy your own Cloudflare Worker (instructions in the page source).',
+  }
+};
+let lang = localStorage.getItem('gsh_lang') || 'ru';
+const t = (k) => (L[lang] && L[lang][k]) || L.ru[k] || k;
+
+function applyLang(){
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach((el) => { el.innerHTML = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-ph]').forEach((el) => { el.placeholder = t(el.dataset.i18nPh); });
+  $('langRu').classList.toggle('active', lang === 'ru');
+  $('langEn').classList.toggle('active', lang === 'en');
+}
+
+/* ================= dom ================= */
 const $ = (id) => document.getElementById(id);
 const els = {
   input: $('collectionInput'), scanBtn: $('scanBtn'),
   statusBox: $('statusBox'), statusText: $('statusText'), statusCount: $('statusCount'), progressFill: $('progressFill'),
-  errorBox: $('errorBox'), debugLog: $('debugLog'),
+  errorBox: $('errorBox'),
   results: $('results'),
   statCount: $('statCount'), statCountSub: $('statCountSub'), statTotal: $('statTotal'),
   statInstalled: $('statInstalled'), statBiggest: $('statBiggest'), statBiggestSize: $('statBiggestSize'),
   tblCount: $('tblCount'), tbody: $('tbody'),
-  sortDescBtn: $('sortDescBtn'), sortAscBtn: $('sortAscBtn'), exportBtn: $('exportBtn'),
+  sortDescBtn: $('sortDescBtn'), sortAscBtn: $('sortAscBtn'), exportBtn: $('exportBtn'), toLuaBtn: $('toLuaBtn'),
+  luaInput: $('luaInput'), genBtn: $('genBtn'),
+  luaStatusBox: $('luaStatusBox'), luaStatusText: $('luaStatusText'), luaStatusCount: $('luaStatusCount'), luaProgressFill: $('luaProgressFill'),
+  luaErrorBox: $('luaErrorBox'), luaOut: $('luaOut'), luaCount: $('luaCount'), luaPre: $('luaPre'),
+  copyBtn: $('copyBtn'), dlBtn: $('dlBtn'),
+  viewSelect: $('viewSelect'), langRu: $('langRu'), langEn: $('langEn'),
 };
 
 let currentItems = [];
 let currentSort = { key: 'size', dir: 'desc' };
+let lastCollectionId = null;
+let luaText = '';
 
 function log(msg){
   const line = '[' + new Date().toLocaleTimeString() + '] ' + msg;
   console.log(line);
-  els.debugLog.textContent += line + '\n';
-  els.debugLog.scrollTop = els.debugLog.scrollHeight;
+  document.querySelectorAll('.debuglog').forEach((pre) => {
+    pre.textContent += line + '\n';
+    pre.scrollTop = pre.scrollHeight;
+  });
 }
 
 function extractId(raw){
@@ -266,14 +425,17 @@ function bytesToSize(bytes){
   return v.toFixed(v >= 100 || i === 0 ? 0 : 2) + ' ' + units[i];
 }
 
-function setStatus(text, done, total){
-  els.statusBox.classList.add('show');
-  els.statusText.textContent = text;
-  els.statusCount.textContent = (total ? done + ' / ' + total : '');
-  els.progressFill.style.width = (total ? Math.min(100, (done/total)*100) : 5) + '%';
+function setStatus(ui, text, done, total){
+  ui.box.classList.add('show');
+  ui.text.textContent = text;
+  ui.count.textContent = (total ? done + ' / ' + total : '');
+  ui.fill.style.width = (total ? Math.min(100, (done/total)*100) : 5) + '%';
 }
-function showError(msg){ els.errorBox.textContent = msg; els.errorBox.classList.add('show'); }
-function hideError(){ els.errorBox.classList.remove('show'); els.errorBox.textContent = ''; }
+const uiHelper = { box: els.statusBox, text: els.statusText, count: els.statusCount, fill: els.progressFill };
+const uiLua    = { box: els.luaStatusBox, text: els.luaStatusText, count: els.luaStatusCount, fill: els.luaProgressFill };
+
+function showError(box, msg){ box.textContent = msg; box.classList.add('show'); }
+function hideError(box){ box.classList.remove('show'); box.textContent = ''; }
 
 function parseJsonLoose(text){
   try { return JSON.parse(text); } catch(e){}
@@ -282,7 +444,7 @@ function parseJsonLoose(text){
   return null;
 }
 
-/* ---------- страница коллекции: обычный GET ---------- */
+/* ---------- страница коллекции: GET ---------- */
 const PAGE_PROXIES = [
   { name: 'corsproxy',  build: (u) => 'https://corsproxy.io/?url=' + encodeURIComponent(u) },
   { name: 'allorigins', build: (u) => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
@@ -315,7 +477,7 @@ async function fetchViaProxy(targetUrl, validate){
 
 async function fetchCollectionItems(collectionId){
   const pageUrl = 'https://steamcommunity.com/sharedfiles/filedetails/?id=' + collectionId;
-  const html = await fetchViaProxy(pageUrl, (t) => t.includes('steamcommunity') || t.includes('workshopItem'));
+  const html = await fetchViaProxy(pageUrl, (txt) => txt.includes('steamcommunity') || txt.includes('workshopItem'));
   const doc = new DOMParser().parseFromString(html, 'text/html');
 
   const items = [];
@@ -343,7 +505,7 @@ async function fetchCollectionItems(collectionId){
   return items;
 }
 
-/* ---------- размеры: Steam требует POST! ---------- */
+/* ---------- размеры: POST ---------- */
 const API_PROXIES = [
   { name: 'corsproxy',  build: (u) => 'https://corsproxy.io/?url=' + encodeURIComponent(u) },
   { name: 'allorigins', build: (u) => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
@@ -354,7 +516,7 @@ if (MY_PROXY) API_PROXIES.unshift({ name: 'my-proxy', build: (u) => MY_PROXY + '
 async function fetchSizes(ids, onProgress){
   const CHUNK = 40;
   const map = {};
-  let preferred = -1; // запомнили прокси, который сработал
+  let preferred = -1;
 
   for (let i = 0; i < ids.length; i += CHUNK){
     const chunk = ids.slice(i, i + CHUNK);
@@ -404,7 +566,6 @@ async function fetchSizes(ids, onProgress){
   return map;
 }
 
-/* ---------- остальное без изменений ---------- */
 function mergeData(items, sizeMap){
   return items.map((it) => {
     const d = sizeMap[it.id];
@@ -421,12 +582,13 @@ function mergeData(items, sizeMap){
   });
 }
 
+/* ---------- рендер helper ---------- */
 function renderStats(items){
   const ok = items.filter((i) => i.status === 'ok');
   const total = ok.reduce((s, i) => s + i.size, 0);
   const skipped = items.length - ok.length;
   els.statCount.textContent = items.length;
-  els.statCountSub.textContent = skipped ? skipped + ' без данных о размере' : 'у всех есть данные о размере';
+  els.statCountSub.textContent = skipped ? skipped + ' ' + t('sub_nodata') : t('sub_allok');
   els.statTotal.textContent = bytesToSize(total);
   els.statInstalled.textContent = bytesToSize(total);
   if (ok.length){
@@ -441,9 +603,9 @@ function renderStats(items){
 
 function statusTag(status){
   if (status === 'ok') return '';
-  if (status === 'collection') return '<span class="tag warn">коллекция</span>';
-  if (status === 'banned') return '<span class="tag bad">забанен</span>';
-  return '<span class="tag bad">нет данных</span>';
+  if (status === 'collection') return '<span class="tag warn">' + t('tag_coll') + '</span>';
+  if (status === 'banned') return '<span class="tag bad">' + t('tag_banned') + '</span>';
+  return '<span class="tag bad">' + t('tag_nodata') + '</span>';
 }
 
 function escapeHtml(s){
@@ -493,26 +655,77 @@ function exportCsv(items){
   a.click();
 }
 
+/* ---------- workshop.lua ---------- */
+function cleanTitle(s){
+  return (s || '').replace(/[\r\n\t]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function buildLua(items, collectionId){
+  const head =
+    '-- workshop.lua · GMod Server Helper\n' +
+    '-- Collection: https://steamcommunity.com/sharedfiles/filedetails/?id=' + collectionId + '\n' +
+    '-- Addons: ' + items.length + ' · ' + new Date().toISOString().slice(0, 10) + '\n\n';
+  const lines = items.map((it) => 'resource.AddWorkshop("' + it.id + '") -- ' + cleanTitle(it.title));
+  return head + lines.join('\n') + '\n';
+}
+
+function showLua(items, collectionId){
+  luaText = buildLua(items, collectionId);
+  els.luaCount.textContent = items.length;
+  els.luaPre.textContent = luaText;
+  els.luaOut.classList.add('show');
+}
+
+function downloadLua(){
+  if (!luaText) return;
+  const blob = new Blob([luaText], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'workshop.lua';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+
+function copyLua(){
+  if (!luaText) return;
+  const done = () => {
+    const old = els.copyBtn.textContent;
+    els.copyBtn.textContent = t('copied');
+    setTimeout(() => { els.copyBtn.textContent = old; }, 1500);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(luaText).then(done).catch(() => fallbackCopy(done));
+  } else fallbackCopy(done);
+}
+function fallbackCopy(done){
+  const ta = document.createElement('textarea');
+  ta.value = luaText;
+  ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); done(); } catch(e){}
+  document.body.removeChild(ta);
+}
+
+/* ---------- сканы ---------- */
 async function runScan(){
   log('=== runScan, input: ' + els.input.value);
-  hideError();
+  hideError(els.errorBox);
   els.results.classList.remove('show');
   const id = extractId(els.input.value);
-  if (!id){
-    showError('Не удалось распознать ID коллекции.');
-    return;
-  }
+  if (!id){ showError(els.errorBox, t('err_id')); return; }
   log('id = ' + id);
   els.scanBtn.disabled = true;
-  els.scanBtn.textContent = 'Сканирую…';
+  els.scanBtn.textContent = t('scanning');
 
   try{
-    setStatus('Читаю страницу коллекции…');
+    setStatus(uiHelper, t('status_page'));
     const items = await fetchCollectionItems(id);
+    lastCollectionId = id;
 
-    setStatus('Получаю размеры аддонов…', 0, items.length);
+    setStatus(uiHelper, t('status_sizes'), 0, items.length);
     const sizeMap = await fetchSizes(items.map((i) => i.id), (done, total) => {
-      setStatus('Получаю размеры аддонов…', done, total);
+      setStatus(uiHelper, t('status_sizes'), done, total);
     });
 
     const merged = mergeData(items, sizeMap);
@@ -526,27 +739,77 @@ async function runScan(){
   }catch(err){
     log('ОШИБКА: ' + (err && err.message ? err.message : err));
     els.statusBox.classList.remove('show');
-    if (err.message === 'not_found'){
-      showError('Коллекция не найдена, удалена или недоступна.');
-    } else if (err.message === 'empty_collection'){
-      showError('На странице не найдено ни одного аддона.');
-    } else if (err.message === 'sizes_unavailable'){
-      showError('Список аддонов прочитан, но ни один публичный прокси не пропустил POST-запрос к Steam API (они сейчас полу-живые). Либо попробуй через пару минут, либо поставь свой прокси на Cloudflare Workers — инструкция в комментарии в коде, это 5 минут и бесплатно.');
-    } else {
-      showError('Не получилось загрузить данные (' + err.message + '). Разверни «Журнал отладки» и пришли скриншот.');
-    }
+    if (err.message === 'not_found') showError(els.errorBox, t('err_notfound'));
+    else if (err.message === 'empty_collection') showError(els.errorBox, t('err_empty'));
+    else if (err.message === 'sizes_unavailable') showError(els.errorBox, t('err_sizes'));
+    else showError(els.errorBox, t('err_proxies'));
   }finally{
     els.scanBtn.disabled = false;
-    els.scanBtn.textContent = '▶ Анализировать';
+    els.scanBtn.textContent = t('btn_scan');
   }
 }
 
-log('скрипт загружен (v3, POST fix)');
+async function runGen(){
+  log('=== runGen, input: ' + els.luaInput.value);
+  hideError(els.luaErrorBox);
+  els.luaOut.classList.remove('show');
+  const id = extractId(els.luaInput.value);
+  if (!id){ showError(els.luaErrorBox, t('err_id')); return; }
+  els.genBtn.disabled = true;
+  els.genBtn.textContent = t('generating');
+
+  try{
+    setStatus(uiLua, t('status_page'));
+    const items = await fetchCollectionItems(id);
+    showLua(items, id);
+    els.luaStatusBox.classList.remove('show');
+    log('lua готов!');
+  }catch(err){
+    log('ОШИБКА: ' + (err && err.message ? err.message : err));
+    els.luaStatusBox.classList.remove('show');
+    if (err.message === 'not_found') showError(els.luaErrorBox, t('err_notfound'));
+    else if (err.message === 'empty_collection') showError(els.luaErrorBox, t('err_empty'));
+    else showError(els.luaErrorBox, t('err_proxies'));
+  }finally{
+    els.genBtn.disabled = false;
+    els.genBtn.textContent = t('btn_gen');
+  }
+}
+
+/* ---------- навигация / язык ---------- */
+function switchView(name){
+  $('view-helper').hidden = name !== 'helper';
+  $('view-lua').hidden = name !== 'lua';
+  document.querySelectorAll('.nav-item[data-view]').forEach((n) => n.classList.toggle('active', n.dataset.view === name));
+  els.viewSelect.value = name;
+}
+
+log('скрипт загружен (v4: i18n + lua generator)');
+applyLang();
+switchView('helper');
+
 els.scanBtn.addEventListener('click', runScan);
 els.input.addEventListener('keydown', (e) => { if (e.key === 'Enter') runScan(); });
+els.genBtn.addEventListener('click', runGen);
+els.luaInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') runGen(); });
 els.sortDescBtn.addEventListener('click', () => { currentSort = { key:'size', dir:'desc' }; renderTable(currentItems); });
 els.sortAscBtn.addEventListener('click', () => { currentSort = { key:'size', dir:'asc' }; renderTable(currentItems); });
 els.exportBtn.addEventListener('click', () => exportCsv(currentItems));
+els.dlBtn.addEventListener('click', downloadLua);
+els.copyBtn.addEventListener('click', copyLua);
+els.toLuaBtn.addEventListener('click', () => {
+  if (currentItems.length){
+    showLua(currentItems, lastCollectionId || extractId(els.input.value) || '0');
+  }
+  switchView('lua');
+});
+els.viewSelect.addEventListener('change', () => switchView(els.viewSelect.value));
+document.querySelectorAll('.nav-item[data-view]').forEach((n) => {
+  n.addEventListener('click', () => switchView(n.dataset.view));
+});
+els.langRu.addEventListener('click', () => { lang = 'ru'; localStorage.setItem('gsh_lang', lang); applyLang(); if (currentItems.length){ renderStats(currentItems); renderTable(currentItems); } });
+els.langEn.addEventListener('click', () => { lang = 'en'; localStorage.setItem('gsh_lang', lang); applyLang(); if (currentItems.length){ renderStats(currentItems); renderTable(currentItems); } });
+
 document.querySelectorAll('thead th[data-key]').forEach((th) => {
   th.addEventListener('click', () => {
     const key = th.dataset.key;
