@@ -61,15 +61,17 @@
 
   .input-row{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap;}
   .input-wrap{flex:1 1 380px;position:relative;}
-  .input-wrap input{width:100%;background:var(--bg-soft);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--mono);font-size:13.5px;padding:13px 14px;outline:none;transition:border-color .15s;}
-  .input-wrap input:focus{border-color:var(--orange);}
-  .input-wrap input::placeholder{color:var(--text-faint);}
+  .input-wrap input,.input-wrap select,.input-wrap textarea{width:100%;background:var(--bg-soft);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--mono);font-size:13.5px;padding:13px 14px;outline:none;transition:border-color .15s;}
+  .input-wrap input:focus,.input-wrap select:focus,.input-wrap textarea:focus{border-color:var(--orange);}
+  .input-wrap input::placeholder,.input-wrap textarea::placeholder{color:var(--text-faint);}
+  .input-wrap textarea{min-height:90px;resize:vertical;}
   .btn{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:.3px;border:none;border-radius:10px;padding:0 22px;background:linear-gradient(135deg,var(--orange),#ff9a52);color:#191305;cursor:pointer;display:flex;align-items:center;gap:8px;transition:filter .15s, transform .1s;min-height:46px;}
   .btn:hover{filter:brightness(1.08);}
   .btn:active{transform:scale(.98);}
   .btn:disabled{opacity:.5;cursor:not-allowed;filter:none;}
   .btn.ghost{background:var(--panel-2);color:var(--text-dim);border:1px solid var(--border);font-weight:600;font-size:12.5px;padding:0 14px;min-height:34px;}
   .btn.ghost:hover{color:var(--text);border-color:var(--text-faint);}
+  .btn.mini{min-height:28px;padding:0 10px;font-size:11.5px;}
   .hint{font-size:11.5px;color:var(--text-faint);margin-top:9px;}
   .hint code{color:var(--text-dim);background:var(--bg-soft);padding:1px 5px;border-radius:4px;}
 
@@ -125,15 +127,56 @@
   .tag{font-size:10px;padding:2px 7px;border-radius:20px;letter-spacing:.3px;border:1px solid var(--border);color:var(--text-faint);}
   .tag.warn{color:#ffcf7a;border-color:rgba(255,207,122,.35);background:rgba(255,207,122,.06);}
   .tag.bad{color:#ffb4bb;border-color:rgba(255,79,94,.35);background:rgba(255,79,94,.06);}
+  .tag.good{color:#9af0c6;border-color:rgba(57,217,138,.35);background:rgba(57,217,138,.06);}
 
   .lua-out{margin-top:20px;display:none;}
   .lua-out.show{display:block;}
   .lua-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
   .lua-head .left{font-family:var(--disp);font-size:13px;color:var(--text-dim);}
   .lua-head .left b{color:var(--text);}
-  pre.lua{margin:0;background:var(--bg-soft);border:1px solid var(--border);border-radius:12px;padding:14px;font-size:12px;line-height:1.7;color:#c8e0c4;max-height:420px;overflow:auto;white-space:pre;}
+  pre.lua,pre.cfg{margin:0;background:var(--bg-soft);border:1px solid var(--border);border-radius:12px;padding:14px;font-size:12px;line-height:1.7;color:#c8e0c4;max-height:420px;overflow:auto;white-space:pre;}
+  pre.cfg{color:#c4d0e0;}
   .lua-path{font-size:11.5px;color:var(--text-faint);margin-top:10px;}
   .lua-path code{color:var(--text-dim);background:var(--bg-soft);padding:1px 5px;border-radius:4px;}
+
+  /* ---------- form groups for cfg & job ---------- */
+  .form-grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:18px;}
+  .form-section{background:var(--panel-2);border:1px solid var(--border-soft);border-radius:12px;padding:16px 18px;}
+  .form-section h3{font-family:var(--disp);font-weight:700;font-size:15px;margin:0 0 4px;color:var(--orange);letter-spacing:.3px;}
+  .form-section .sec-sub{font-size:11.5px;color:var(--text-faint);margin-bottom:14px;line-height:1.5;}
+  .row{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+  .row:last-child{margin-bottom:0;}
+  .row label{font-family:var(--disp);font-size:12px;font-weight:600;letter-spacing:.3px;color:var(--text);display:flex;align-items:center;gap:8px;}
+  .row label .cvar{color:var(--yellow);font-family:var(--mono);font-size:11.5px;font-weight:500;}
+  .row .sub{font-size:11px;color:var(--text-faint);line-height:1.5;}
+  .row input[type=text],.row input[type=number],.row input[type=color],.row select,.row textarea{
+    background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);
+    font-family:var(--mono);font-size:13px;padding:9px 11px;outline:none;width:100%;transition:border-color .12s;
+  }
+  .row input:focus,.row select:focus,.row textarea:focus{border-color:var(--orange);}
+  .row input[type=color]{padding:4px;cursor:pointer;height:38px;width:60px;}
+  .row textarea{min-height:120px;resize:vertical;}
+  .row .inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .row .inline input{flex:1;min-width:0;}
+  .row .chk{display:flex;align-items:center;gap:8px;color:var(--text-dim);font-size:12.5px;cursor:pointer;}
+  .row .chk input{width:16px;height:16px;accent-color:var(--orange);cursor:pointer;}
+  .list-add{display:flex;gap:8px;}
+  .list-add input{flex:1;min-width:0;}
+  .chip-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  .chip{background:var(--bg);border:1px solid var(--border);border-radius:18px;padding:4px 10px;font-size:11.5px;color:var(--text-dim);display:flex;align-items:center;gap:6px;word-break:break-all;}
+  .chip b{color:var(--text);font-weight:600;font-family:var(--mono);}
+  .chip .x{color:var(--text-faint);cursor:pointer;font-family:var(--mono);padding:0 2px;}
+  .chip .x:hover{color:var(--red);}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media (max-width:600px){ .two-col{grid-template-columns:1fr;} }
+
+  .jobs-list{margin-top:18px;display:flex;flex-direction:column;gap:10px;}
+  .job-card{background:var(--panel-2);border:1px solid var(--border-soft);border-radius:10px;padding:12px 14px;display:flex;gap:12px;align-items:center;}
+  .job-card .job-color{width:12px;height:36px;border-radius:4px;flex:none;}
+  .job-card .job-info{flex:1;min-width:0;}
+  .job-card .job-info b{font-family:var(--disp);font-size:14px;font-weight:700;color:var(--text);display:block;}
+  .job-card .job-info span{font-size:11.5px;color:var(--text-faint);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .job-card .job-actions{display:flex;gap:6px;flex:none;}
 
   footer.page-foot{margin-top:34px;font-size:11px;color:var(--text-faint);line-height:1.7;}
   ::selection{background:rgba(255,122,41,.3);}
@@ -148,7 +191,9 @@
   <b style="font-family:var(--disp);font-size:14px;">GMod Server Helper</b>
   <select id="viewSelect">
     <option value="helper" data-i18n="tool_helper">Collection Helper</option>
-    <option value="lua" data-i18n="tool_lua">Workshop.lua генератор</option>
+    <option value="lua" data-i18n="tool_lua">Workshop.lua</option>
+    <option value="cfg" data-i18n="tool_cfg">server.cfg</option>
+    <option value="job" data-i18n="tool_job">DarkRP job</option>
   </select>
 </div>
 
@@ -165,8 +210,9 @@
       <div class="nav" style="margin-top:8px;">
         <div class="nav-item active" data-view="helper"><span class="dot"></span> <span data-i18n="tool_helper">Collection Helper</span></div>
         <div class="nav-item" data-view="lua"><span class="dot"></span> <span data-i18n="tool_lua">Workshop.lua генератор</span></div>
+        <div class="nav-item" data-view="cfg"><span class="dot"></span> <span data-i18n="tool_cfg">server.cfg генератор</span></div>
+        <div class="nav-item" data-view="job"><span class="dot"></span> <span data-i18n="tool_job">DarkRP job генератор</span></div>
         <div class="nav-item soon"><span class="dot"></span> <span data-i18n="tool_conflicts">Проверка конфликтов</span> <span class="soon-tag" data-i18n="soon">скоро</span></div>
-        <div class="nav-item soon"><span class="dot"></span> <span data-i18n="tool_cfg">server.cfg генератор</span> <span class="soon-tag" data-i18n="soon">скоро</span></div>
         <div class="nav-item soon"><span class="dot"></span> <span data-i18n="tool_load">Оценка нагрузки</span> <span class="soon-tag" data-i18n="soon">скоро</span></div>
       </div>
     </div>
@@ -285,6 +331,63 @@
         <div class="lua-path" data-i18n="lua_path">Положи файл в <code>garrysmod/lua/autorun/server/workshop.lua</code> — сервер подтянет аддоны при старте.</div>
       </div>
     </section>
+
+    <!-- ============ VIEW 3: SERVER.CFG GENERATOR ============ -->
+    <section id="view-cfg" hidden>
+      <div class="page-head">
+        <div class="eyebrow" data-i18n="eyebrow_cfg">Инструмент 03 — server.cfg Generator</div>
+        <h1 data-i18n="h1_cfg">server.cfg с пояснениями</h1>
+        <p class="lede" data-i18n="lede_cfg">Соберите server.cfg из блоков: сеть, геймплей, безопасность, физика. Все значения с комментариями. Скопируйте готовый файл и положите в <code>garrysmod/cfg/server.cfg</code>.</p>
+      </div>
+
+      <div class="panel">
+        <div class="form-grid" id="cfgForm"></div>
+
+        <div class="lua-out show" id="cfgOut" style="margin-top:24px;">
+          <div class="lua-head">
+            <div class="left"><b data-i18n="cfg_preview">Превью</b> · <code>server.cfg</code></div>
+            <div class="toolbar-actions">
+              <button class="btn ghost" id="cfgCopyBtn" data-i18n="btn_copy">Копировать</button>
+              <button class="btn" id="cfgDlBtn" style="min-height:34px;" data-i18n="btn_dl_cfg">Скачать server.cfg</button>
+            </div>
+          </div>
+          <pre class="cfg" id="cfgPre"></pre>
+          <div class="lua-path" data-i18n="cfg_path">Положи файл в <code>garrysmod/cfg/server.cfg</code> — он будет применён автоматически при старте сервера.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ VIEW 4: DARKRP JOB GENERATOR ============ -->
+    <section id="view-job" hidden>
+      <div class="page-head">
+        <div class="eyebrow" data-i18n="eyebrow_job">Инструмент 04 — DarkRP Job Generator</div>
+        <h1 data-i18n="h1_job">Профессии DarkRP за 30 секунд</h1>
+        <p class="lede" data-i18n="lede_job">Заполни карточку: HP, броня, скорость, прыжок, масштаб модели, оружие, модели и кастомный Lua. Добавь несколько джобов в список и выгрузи всё одним jobs.lua.</p>
+      </div>
+
+      <div class="panel">
+        <div class="form-grid" id="jobForm"></div>
+
+        <div style="display:flex;gap:10px;margin-top:22px;flex-wrap:wrap;">
+          <button class="btn" id="jobAddBtn" data-i18n="btn_addjob">+ Добавить в список</button>
+          <button class="btn ghost" id="jobResetBtn" data-i18n="btn_reset">Очистить форму</button>
+        </div>
+
+        <div class="jobs-list" id="jobsList"></div>
+
+        <div class="lua-out show" id="jobOut" style="margin-top:24px;">
+          <div class="lua-head">
+            <div class="left"><b id="jobCount">0</b> <span data-i18n="job_lines">профессий в jobs.lua</span></div>
+            <div class="toolbar-actions">
+              <button class="btn ghost" id="jobCopyBtn" data-i18n="btn_copy">Копировать</button>
+              <button class="btn" id="jobDlBtn" style="min-height:34px;" data-i18n="btn_dl_job">Скачать jobs.lua</button>
+            </div>
+          </div>
+          <pre class="lua" id="jobPre"></pre>
+          <div class="lua-path" data-i18n="job_path">Положи файл в <code>garrysmod/addons/myrp/lua/autorun/server/jobs.lua</code> (или любой другой autorun-папке на сервере).</div>
+        </div>
+      </div>
+    </section>
   </main>
 </div>
 
@@ -297,8 +400,9 @@ const MY_PROXY = '';
 /* ================= i18n ================= */
 const L = {
   ru: {
-    nav_tools:'Инструменты', tool_helper:'Collection Helper', tool_lua:'Workshop.lua генератор',
-    tool_conflicts:'Проверка конфликтов', tool_cfg:'server.cfg генератор', tool_load:'Оценка нагрузки', soon:'скоро',
+    nav_tools:'Инструменты', tool_helper:'Collection Helper', tool_lua:'Workshop.lua',
+    tool_cfg:'server.cfg', tool_job:'DarkRP job',
+    tool_conflicts:'Проверка конфликтов', tool_load:'Оценка нагрузки', soon:'скоро',
     side_foot:'Данные о размерах берутся напрямую из Steam Web API через публичные CORS‑прокси. Для очень больших коллекций сканирование может занять минуту.',
     eyebrow_helper:'Инструмент 01 — Collection Helper', h1_helper:'Сколько весит твоя коллекция?',
     lede_helper:'Вставь ссылку на коллекцию мастерской Garry\'s Mod или её ID — покажу вес каждого аддона, общий размер и дам отсортировать список по весу, чтобы найти, что жрёт место на сервере.',
@@ -317,22 +421,62 @@ const L = {
     eyebrow_lua:'Инструмент 02 — Workshop.lua Generator', h1_lua:'workshop.lua в один клик',
     lede_lua:'Вставь ссылку на коллекцию или ID — получишь готовый файл со строками resource.AddWorkshop("id") -- Название для каждого аддона. Скачай его и закинь на сервер.',
     btn_gen:'▶ Сгенерировать', generating:'Генерирую…',
-    hint_lua:'Строки генерируются в порядке аддонов на странице коллекции. Вложенные коллекции разворачиваются только если они видны на странице.',
+    hint_lua:'Строки генерируются в порядке аддонов на странице коллекции.',
     lua_lines:'строк resource.AddWorkshop', btn_copy:'Копировать', copied:'Скопировано ✓',
     btn_dl:'Скачать workshop.lua',
     lua_path:'Положи файл в <code>garrysmod/lua/autorun/server/workshop.lua</code> — сервер подтянет аддоны при старте.',
     status_page:'Читаю страницу коллекции…', status_sizes:'Получаю размеры аддонов…',
     sub_nodata:'без данных о размере', sub_allok:'у всех есть данные о размере',
     tag_coll:'коллекция', tag_banned:'забанен', tag_nodata:'нет данных',
-    err_id:'Не удалось распознать ID коллекции. Вставь ссылку вида steamcommunity.com/sharedfiles/filedetails/?id=... или просто число.',
+    err_id:'Не удалось распознать ID коллекции.',
     err_notfound:'Коллекция не найдена, удалена или недоступна. Проверь ссылку/ID.',
-    err_empty:'На странице не найдено ни одного аддона. Убедись, что ссылка ведёт именно на коллекцию, а не на отдельный аддон.',
-    err_proxies:'Не получилось загрузить данные через публичные CORS‑прокси. Подожди немного и попробуй снова, или поставь свой прокси (инструкция в коде страницы).',
-    err_sizes:'Список аддонов прочитан, но ни один прокси не пропустил POST‑запрос к Steam API. Попробуй через пару минут или поставь свой прокси на Cloudflare Workers (инструкция в коде страницы).',
+    err_empty:'На странице не найдено ни одного аддона.',
+    err_proxies:'Не получилось загрузить данные через публичные CORS‑прокси.',
+    err_sizes:'Список аддонов прочитан, но ни один прокси не пропустил POST‑запрос к Steam API.',
+
+    // server.cfg
+    eyebrow_cfg:'Инструмент 03 — server.cfg Generator', h1_cfg:'server.cfg с пояснениями',
+    lede_cfg:'Соберите server.cfg из блоков: сеть, геймплей, безопасность, физика. Все значения с комментариями. Скопируйте готовый файл и положите в <code>garrysmod/cfg/server.cfg</code>.',
+    cfg_preview:'Превью', btn_dl_cfg:'Скачать server.cfg',
+    cfg_path:'Положи файл в <code>garrysmod/cfg/server.cfg</code> — он будет применён автоматически при старте сервера.',
+    cfg_s_server:'Сервер', cfg_s_server_sub:'Базовое имя, контакт и теги для сервераузера.',
+    cfg_s_net:'Сеть и производительность', cfg_s_net_sub:'Лимиты рейта и тикрейта. Подстрой под канал: для 100+ игроков держи rate ≥ 80000.',
+    cfg_s_game:'Геймплей', cfg_s_game_sub:'Урон от падения, тим‑баланс, длительность карты.',
+    cfg_s_sec:'Безопасность и RCON', cfg_s_sec_sub:'cheats, LAN, RCON‑пароль. Меняй rcon_password обязательно!',
+    cfg_s_phys:'Физика и мир', cfg_s_phys_sub:'Гравитация, скорость, шаг. Осторожно с sv_gravity: нестандартное значение ломает прыжки.',
+    cfg_s_log:'Логи', cfg_s_log_sub:'Что логировать. Для продакшн‑сервера включайте всё.',
+    cfg_s_ws:'Workshop', cfg_s_ws_sub:'Разрешение пользовательских аддонов и URL для FastDL.',
+    // DarkRP job
+    eyebrow_job:'Инструмент 04 — DarkRP Job Generator', h1_job:'Профессии DarkRP за 30 секунд',
+    lede_job:'Заполни карточку: HP, броня, скорость, прыжок, масштаб модели, оружие, модели и кастомный Lua. Добавь несколько джобов в список и выгрузи всё одним jobs.lua.',
+    job_lines:'профессий в jobs.lua', btn_dl_job:'Скачать jobs.lua',
+    job_path:'Положи файл в <code>garrysmod/addons/myrp/lua/autorun/server/jobs.lua</code> (или любой другой autorun-папке на сервере).',
+    btn_addjob:'+ Добавить в список', btn_reset:'Очистить форму', btn_add:'+ Добавить',
+    job_s_id:'Идентификатор', job_s_id_sub:'Константа и команда, по которой игроки выбирают профессию.',
+    job_s_look:'Внешний вид', job_s_look_sub:'Модели игрока, цвет в F4 и описание.',
+    job_s_pay:'Зарплата и лимиты', job_s_pay_sub:'Деньги каждые 10 минут, максимум игроков, права.',
+    job_s_weap:'Оружие', job_s_weap_sub:'Список оружий, которые выдаются при спавне.',
+    job_s_stats:'Статы игрока', job_s_stats_sub:'HP, броня, скорость, прыжок, размер модели.',
+    job_s_extra:'Дополнительно', job_s_extra_sub:'Кастомный код и ограничения доступа.',
+    job_const:'Константа', job_const_ph:'TEAM_EXAMPLE',
+    job_disp:'Отображаемое имя', job_disp_ph:'Пример',
+    job_cmd:'Команда', job_cmd_ph:'example',
+    job_desc:'Описание', job_desc_ph:'Описание профессии для меню F4…',
+    job_color:'Цвет', job_salary:'Зарплата', job_max:'Макс. игроков', job_admin:'Админ‑уровень', job_vote:'Голосование',
+    job_weap:'Оружие (имя SWEP)', job_weap_ph:'weapon_physgun',
+    job_models:'Модели игрока', job_models_ph:'models/player/alyx.mdl',
+    job_hp:'Здоровье (HP)', job_armor:'Броня',
+    job_walk:'Скорость ходьбы', job_run:'Скорость бега',
+    job_jump:'Сила прыжка', job_scale:'Масштаб модели (1 = обычный)',
+    job_nofall:'Без урона от падения', job_custom:'Кастомный Lua (вставится в PlayerSpawn)',
+    job_custom_ph:'-- ply:SetModelScale(1.3, 0)\n-- ply:GodEnable()',
+    job_chk:'Допуск (customCheck)', job_chk_ph:'return ply:IsAdmin()',
+    job_chk_enable:'Только для определённой группы',
   },
   en: {
-    nav_tools:'Tools', tool_helper:'Collection Helper', tool_lua:'Workshop.lua generator',
-    tool_conflicts:'Conflict checker', tool_cfg:'server.cfg generator', tool_load:'Load estimation', soon:'soon',
+    nav_tools:'Tools', tool_helper:'Collection Helper', tool_lua:'Workshop.lua',
+    tool_cfg:'server.cfg', tool_job:'DarkRP job',
+    tool_conflicts:'Conflict checker', tool_load:'Load estimation', soon:'soon',
     side_foot:'Sizes are fetched directly from the Steam Web API via public CORS proxies. Very large collections may take a minute to scan.',
     eyebrow_helper:'Tool 01 — Collection Helper', h1_helper:'How heavy is your collection?',
     lede_helper:'Paste a Garry\'s Mod Workshop collection link or its ID — see each addon\'s size, the total, and sort by weight to find what eats your server\'s disk.',
@@ -351,18 +495,55 @@ const L = {
     eyebrow_lua:'Tool 02 — Workshop.lua Generator', h1_lua:'workshop.lua in one click',
     lede_lua:'Paste a collection link or ID — get a ready file with resource.AddWorkshop("id") -- Title lines for every addon. Download it and drop it on your server.',
     btn_gen:'▶ Generate', generating:'Generating…',
-    hint_lua:'Lines follow the addon order on the collection page. Nested collections are expanded only if visible on the page.',
+    hint_lua:'Lines follow the addon order on the collection page.',
     lua_lines:'resource.AddWorkshop lines', btn_copy:'Copy', copied:'Copied ✓',
     btn_dl:'Download workshop.lua',
     lua_path:'Put the file to <code>garrysmod/lua/autorun/server/workshop.lua</code> — the server will pull the addons on start.',
     status_page:'Reading collection page…', status_sizes:'Fetching addon sizes…',
     sub_nodata:'without size data', sub_allok:'all have size data',
     tag_coll:'collection', tag_banned:'banned', tag_nodata:'no data',
-    err_id:'Could not recognize the collection ID. Paste a link like steamcommunity.com/sharedfiles/filedetails/?id=... or just a number.',
-    err_notfound:'Collection not found, deleted or unavailable. Check the link/ID.',
-    err_empty:'No addons found on the page. Make sure the link points to a collection, not a single addon.',
-    err_proxies:'Could not load data via public CORS proxies. Wait a bit and retry, or deploy your own proxy (instructions in the page source).',
-    err_sizes:'Addon list was read, but no proxy passed the POST request to the Steam API. Retry in a couple of minutes or deploy your own Cloudflare Worker (instructions in the page source).',
+    err_id:'Could not recognize the collection ID.',
+    err_notfound:'Collection not found, deleted or unavailable.',
+    err_empty:'No addons found on the page.',
+    err_proxies:'Could not load data via public CORS proxies.',
+    err_sizes:'Addon list was read, but no proxy passed the POST request to the Steam API.',
+
+    eyebrow_cfg:'Tool 03 — server.cfg Generator', h1_cfg:'server.cfg with explanations',
+    lede_cfg:'Assemble a server.cfg from blocks: network, gameplay, security, physics. Every value is commented. Copy the file and put it into <code>garrysmod/cfg/server.cfg</code>.',
+    cfg_preview:'Preview', btn_dl_cfg:'Download server.cfg',
+    cfg_path:'Put the file into <code>garrysmod/cfg/server.cfg</code> — it is applied on server start.',
+    cfg_s_server:'Server', cfg_s_server_sub:'Basic name, contact and tags for the server browser.',
+    cfg_s_net:'Network & performance', cfg_s_net_sub:'Rate & tick limits. Tune to your channel: for 100+ players keep rate ≥ 80000.',
+    cfg_s_game:'Gameplay', cfg_s_game_sub:'Fall damage, team balance, map duration.',
+    cfg_s_sec:'Security & RCON', cfg_s_sec_sub:'Cheats, LAN, RCON password. Always change rcon_password!',
+    cfg_s_phys:'Physics & world', cfg_s_phys_sub:'Gravity, speed, step. Careful with sv_gravity: non-default values break jumps.',
+    cfg_s_log:'Logs', cfg_s_log_sub:'What to log. Enable everything on production servers.',
+    cfg_s_ws:'Workshop', cfg_s_ws_sub:'Allow user addons and FastDL URL.',
+    eyebrow_job:'Tool 04 — DarkRP Job Generator', h1_job:'DarkRP jobs in 30 seconds',
+    lede_job:'Fill the card: HP, armor, speed, jump, model scale, weapons, models and custom Lua. Add several jobs to the list and export them all as one jobs.lua.',
+    job_lines:'jobs in jobs.lua', btn_dl_job:'Download jobs.lua',
+    job_path:'Put the file into <code>garrysmod/addons/myrp/lua/autorun/server/jobs.lua</code> (or any autorun folder on the server).',
+    btn_addjob:'+ Add to list', btn_reset:'Reset form', btn_add:'+ Add',
+    job_s_id:'Identifier', job_s_id_sub:'Constant and chat command used to pick the job.',
+    job_s_look:'Appearance', job_s_look_sub:'Player models, F4 menu color and description.',
+    job_s_pay:'Salary & limits', job_s_pay_sub:'Money every 10 minutes, player cap, rights.',
+    job_s_weap:'Weapons', job_s_weap_sub:'Weapons given on spawn.',
+    job_s_stats:'Player stats', job_s_stats_sub:'HP, armor, speed, jump, model scale.',
+    job_s_extra:'Extras', job_s_extra_sub:'Custom code and access control.',
+    job_const:'Constant', job_const_ph:'TEAM_EXAMPLE',
+    job_disp:'Display name', job_disp_ph:'Example',
+    job_cmd:'Command', job_cmd_ph:'example',
+    job_desc:'Description', job_desc_ph:'F4 menu description…',
+    job_color:'Color', job_salary:'Salary', job_max:'Max players', job_admin:'Admin level', job_vote:'Vote required',
+    job_weap:'Weapon (SWEP name)', job_weap_ph:'weapon_physgun',
+    job_models:'Player models', job_models_ph:'models/player/alyx.mdl',
+    job_hp:'Health (HP)', job_armor:'Armor',
+    job_walk:'Walk speed', job_run:'Run speed',
+    job_jump:'Jump power', job_scale:'Model scale (1 = default)',
+    job_nofall:'No fall damage', job_custom:'Custom Lua (injected into PlayerSpawn)',
+    job_custom_ph:'-- ply:SetModelScale(1.3, 0)\n-- ply:GodEnable()',
+    job_chk:'Access check (customCheck)', job_chk_ph:'return ply:IsAdmin()',
+    job_chk_enable:'Limit to a specific group',
   }
 };
 let lang = localStorage.getItem('gsh_lang') || 'ru';
@@ -374,6 +555,7 @@ function applyLang(){
   document.querySelectorAll('[data-i18n-ph]').forEach((el) => { el.placeholder = t(el.dataset.i18nPh); });
   $('langRu').classList.toggle('active', lang === 'ru');
   $('langEn').classList.toggle('active', lang === 'en');
+  buildCfgForm(); buildJobForm(); renderJobs();
 }
 
 /* ================= dom ================= */
@@ -391,6 +573,9 @@ const els = {
   luaStatusBox: $('luaStatusBox'), luaStatusText: $('luaStatusText'), luaStatusCount: $('luaStatusCount'), luaProgressFill: $('luaProgressFill'),
   luaErrorBox: $('luaErrorBox'), luaOut: $('luaOut'), luaCount: $('luaCount'), luaPre: $('luaPre'),
   copyBtn: $('copyBtn'), dlBtn: $('dlBtn'),
+  cfgForm: $('cfgForm'), cfgPre: $('cfgPre'), cfgCopyBtn: $('cfgCopyBtn'), cfgDlBtn: $('cfgDlBtn'),
+  jobForm: $('jobForm'), jobsList: $('jobsList'), jobPre: $('jobPre'), jobCount: $('jobCount'),
+  jobAddBtn: $('jobAddBtn'), jobResetBtn: $('jobResetBtn'), jobCopyBtn: $('jobCopyBtn'), jobDlBtn: $('jobDlBtn'),
   viewSelect: $('viewSelect'), langRu: $('langRu'), langEn: $('langEn'),
 };
 
@@ -398,6 +583,9 @@ let currentItems = [];
 let currentSort = { key: 'size', dir: 'desc' };
 let lastCollectionId = null;
 let luaText = '';
+let cfgText = '';
+let jobText = '';
+let jobs = []; // массив собранных DarkRP джобов
 
 function log(msg){
   const line = '[' + new Date().toLocaleTimeString() + '] ' + msg;
@@ -479,7 +667,6 @@ async function fetchCollectionItems(collectionId){
   const pageUrl = 'https://steamcommunity.com/sharedfiles/filedetails/?id=' + collectionId;
   const html = await fetchViaProxy(pageUrl, (txt) => txt.includes('steamcommunity') || txt.includes('workshopItem'));
   const doc = new DOMParser().parseFromString(html, 'text/html');
-
   const items = [];
   const seen = new Set();
   doc.querySelectorAll('.workshopItemTitle').forEach((titleEl) => {
@@ -499,7 +686,6 @@ async function fetchCollectionItems(collectionId){
     }
     items.push({ id, title: titleEl.textContent.trim(), author });
   });
-
   if (items.length === 0) throw new Error('empty_collection');
   log('найдено аддонов: ' + items.length);
   return items;
@@ -517,18 +703,15 @@ async function fetchSizes(ids, onProgress){
   const CHUNK = 40;
   const map = {};
   let preferred = -1;
-
   for (let i = 0; i < ids.length; i += CHUNK){
     const chunk = ids.slice(i, i + CHUNK);
     const body = new URLSearchParams();
     body.set('itemcount', String(chunk.length));
     chunk.forEach((id, idx) => body.set('publishedfileids[' + idx + ']', id));
     const apiUrl = 'https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/';
-
     const order = preferred >= 0
       ? [preferred].concat(API_PROXIES.map((_, idx) => idx).filter((idx) => idx !== preferred))
       : API_PROXIES.map((_, idx) => idx);
-
     let data = null;
     for (const idx of order){
       const p = API_PROXIES[idx];
@@ -554,14 +737,12 @@ async function fetchSizes(ids, onProgress){
         clearTimeout(timer);
       }
     }
-
     if (data && data.response && data.response.publishedfiledetails){
       data.response.publishedfiledetails.forEach((d) => { map[d.publishedfileid] = d; });
     }
     onProgress(Math.min(i + CHUNK, ids.length), ids.length);
     await new Promise((r) => setTimeout(r, 250));
   }
-
   if (Object.keys(map).length === 0) throw new Error('sizes_unavailable');
   return map;
 }
@@ -582,7 +763,6 @@ function mergeData(items, sizeMap){
   });
 }
 
-/* ---------- рендер helper ---------- */
 function renderStats(items){
   const ok = items.filter((i) => i.status === 'ok');
   const total = ok.reduce((s, i) => s + i.size, 0);
@@ -676,36 +856,37 @@ function showLua(items, collectionId){
   els.luaOut.classList.add('show');
 }
 
-function downloadLua(){
-  if (!luaText) return;
-  const blob = new Blob([luaText], { type: 'text/plain;charset=utf-8' });
+function downloadFile(name, text){
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'workshop.lua';
+  a.download = name;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 5000);
 }
 
-function copyLua(){
-  if (!luaText) return;
+function downloadLua(){ if (luaText) downloadFile('workshop.lua', luaText); }
+
+function copyText(text, btn){
   const done = () => {
-    const old = els.copyBtn.textContent;
-    els.copyBtn.textContent = t('copied');
-    setTimeout(() => { els.copyBtn.textContent = old; }, 1500);
+    const old = btn.textContent;
+    btn.textContent = t('copied');
+    setTimeout(() => { btn.textContent = old; }, 1500);
   };
   if (navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(luaText).then(done).catch(() => fallbackCopy(done));
-  } else fallbackCopy(done);
+    navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+  } else fallbackCopy(text, done);
 }
-function fallbackCopy(done){
+function fallbackCopy(text, done){
   const ta = document.createElement('textarea');
-  ta.value = luaText;
+  ta.value = text;
   ta.style.position = 'fixed'; ta.style.opacity = '0';
   document.body.appendChild(ta);
   ta.select();
   try { document.execCommand('copy'); done(); } catch(e){}
   document.body.removeChild(ta);
 }
+function copyLua(){ if (luaText) copyText(luaText, els.copyBtn); }
 
 /* ---------- сканы ---------- */
 async function runScan(){
@@ -717,17 +898,14 @@ async function runScan(){
   log('id = ' + id);
   els.scanBtn.disabled = true;
   els.scanBtn.textContent = t('scanning');
-
   try{
     setStatus(uiHelper, t('status_page'));
     const items = await fetchCollectionItems(id);
     lastCollectionId = id;
-
     setStatus(uiHelper, t('status_sizes'), 0, items.length);
     const sizeMap = await fetchSizes(items.map((i) => i.id), (done, total) => {
       setStatus(uiHelper, t('status_sizes'), done, total);
     });
-
     const merged = mergeData(items, sizeMap);
     currentItems = merged;
     currentSort = { key: 'size', dir: 'desc' };
@@ -757,7 +935,6 @@ async function runGen(){
   if (!id){ showError(els.luaErrorBox, t('err_id')); return; }
   els.genBtn.disabled = true;
   els.genBtn.textContent = t('generating');
-
   try{
     setStatus(uiLua, t('status_page'));
     const items = await fetchCollectionItems(id);
@@ -776,15 +953,460 @@ async function runGen(){
   }
 }
 
+/* ================= server.cfg generator ================= */
+const CFG_SCHEMA = [
+  {
+    key: 'server', titleKey: 'cfg_s_server', subKey: 'cfg_s_server_sub',
+    fields: [
+      { cvar:'hostname', label:'Hostname', hint:'Отображаемое имя сервера в браузере', type:'text', value:'My GMod Server' },
+      { cvar:'sv_contact', label:'Contact', hint:'Email или Steam для связи', type:'text', value:'admin@example.com' },
+      { cvar:'sv_tags', label:'Tags', hint:'Через запятую — видно в поиске', type:'text', value:'rp,gmod,fun' },
+      { cvar:'sv_region', label:'Region', hint:'255 = auto, 0=US-East, 1=US-West, 2=South America, 3=Europe, 4=Asia, 5=Australia, 6=Middle East, 7=Africa', type:'number', value:255 },
+      { cvar:'sv_password', label:'Password (опц.)', hint:'Оставь пустым для публичного сервера', type:'text', value:'', optional:true },
+    ]
+  },
+  {
+    key: 'net', titleKey: 'cfg_s_net', subKey: 'cfg_s_net_sub',
+    fields: [
+      { cvar:'sv_minrate', label:'Min rate', hint:'Минимальный рейт клиента (байт/с). 3500 — для слабых каналов', type:'number', value:3500 },
+      { cvar:'sv_maxrate', label:'Max rate', hint:'Максимальный рейт. 0 = нет ограничения (рекомендуется)', type:'number', value:0 },
+      { cvar:'sv_minupdaterate', label:'Min updaterate', hint:'Минимум тиков обновления/сек', type:'number', value:10 },
+      { cvar:'sv_maxupdaterate', label:'Max updaterate', hint:'60 — стандарт для 60-tick серверов', type:'number', value:60 },
+      { cvar:'sv_mincmdrate', label:'Min cmdrate', hint:'Минимум команд/сек от клиента', type:'number', value:10 },
+      { cvar:'sv_maxcmdrate', label:'Max cmdrate', hint:'Обычно = updaterate', type:'number', value:60 },
+      { cvar:'net_maxfilesize', label:'Max FastDL file size', hint:'Максимальный размер файла через FastDL (МБ)', type:'number', value:64 },
+    ]
+  },
+  {
+    key: 'game', titleKey: 'cfg_s_game', subKey: 'cfg_s_game_sub',
+    fields: [
+      { cvar:'mp_timelimit', label:'Map time limit', hint:'Минут на карту. 0 = без лимита', type:'number', value:30 },
+      { cvar:'mp_winlimit', label:'Win limit', hint:'Количество побед для смены карты. 0 = выкл.', type:'number', value:0 },
+      { cvar:'mp_maxrounds', label:'Max rounds', hint:'Количество раундов. 0 = выкл.', type:'number', value:0 },
+      { cvar:'mp_falldamage', label:'Fall damage', hint:'Урон от падения. 1 = вкл., 0 = выкл.', type:'select', options:['0','1'], value:'1' },
+      { cvar:'mp_weaponstay', label:'Weapon stay', hint:'Оружие остаётся после подбора. 1 = да', type:'select', options:['0','1'], value:'0' },
+      { cvar:'mp_friendlyfire', label:'Friendly fire', hint:'Урон по своим. 1 = вкл.', type:'select', options:['0','1'], value:'0' },
+      { cvar:'mp_autoteambalance', label:'Auto team balance', hint:'Автобаланс команд', type:'select', options:['0','1'], value:'1' },
+      { cvar:'mp_limitteams', label:'Limit teams', hint:'Макс. разница в числе игроков между командами', type:'number', value:2 },
+      { cvar:'mp_allowspectators', label:'Allow spectators', hint:'Разрешить наблюдателей', type:'select', options:['0','1'], value:'1' },
+    ]
+  },
+  {
+    key: 'sec', titleKey: 'cfg_s_sec', subKey: 'cfg_s_sec_sub',
+    fields: [
+      { cvar:'sv_lan', label:'LAN only', hint:'1 = только локальная сеть. Для публичного сервера 0', type:'select', options:['0','1'], value:'0' },
+      { cvar:'sv_cheats', label:'Cheats', hint:'Читы (noclip, god). На сервере всегда 0!', type:'select', options:['0','1'], value:'0' },
+      { cvar:'sv_allowcslua', label:'Allow client lua', hint:'Разрешить выполнение lua в консоли клиента. Лучше 0', type:'select', options:['0','1'], value:'0' },
+      { cvar:'sv_alltalk', label:'All talk', hint:'Голосовой чат между командами. 1 = все слышат всех', type:'select', options:['0','1'], value:'0' },
+      { cvar:'rcon_password', label:'RCON password', hint:'Пароль для удалённого администрирования. ОБЯЗАТЕЛЬНО МЕНЯЙ!', type:'text', value:'CHANGE_ME_NOW' },
+      { cvar:'rcon_address', label:'RCON address (опц.)', hint:'IP сервера для RCON (обычно авто)', type:'text', value:'', optional:true },
+    ]
+  },
+  {
+    key: 'phys', titleKey: 'cfg_s_phys', subKey: 'cfg_s_phys_sub',
+    fields: [
+      { cvar:'sv_gravity', label:'Gravity', hint:'Гравитация. 600 — стандарт GMod/Source', type:'number', value:600 },
+      { cvar:'sv_airaccelerate', label:'Air accelerate', hint:'Ускорение в воздухе (10 — стандарт)', type:'number', value:10 },
+      { cvar:'sv_friction', label:'Friction', hint:'Трение по земле (4 — стандарт)', type:'number', value:4 },
+      { cvar:'sv_maxspeed', label:'Max speed', hint:'Макс. скорость игрока (320 — стандарт Source)', type:'number', value:320 },
+      { cvar:'sv_stepsize', label:'Step size', hint:'Высота шага (18 — стандарт)', type:'number', value:18 },
+    ]
+  },
+  {
+    key: 'log', titleKey: 'cfg_s_log', subKey: 'cfg_s_log_sub',
+    fields: [
+      { cvar:'sv_voiceenable', label:'Voice chat', hint:'Включить голос. 1 = вкл.', type:'select', options:['0','1'], value:'1' },
+      { cvar:'sv_logbans', label:'Log bans', hint:'Логировать баны. 1 = вкл.', type:'select', options:['0','1'], value:'1' },
+      { cvar:'sv_logblocks', label:'Log blocked queries', hint:'Логировать блокированные запросы', type:'select', options:['0','1'], value:'1' },
+      { cvar:'sv_logecho', label:'Log echo to console', hint:'Дублировать логи в консоль сервера', type:'select', options:['0','1'], value:'1' },
+      { cvar:'sv_logfile', label:'Write log file', hint:'Писать логи в файл', type:'select', options:['0','1'], value:'1' },
+      { cvar:'sv_log_onefile', label:'One log file', hint:'Один файл на запуск сервера', type:'select', options:['0','1'], value:'0' },
+    ]
+  },
+  {
+    key: 'ws', titleKey: 'cfg_s_ws', subKey: 'cfg_s_ws_sub',
+    fields: [
+      { cvar:'sv_workshop_allow_other_users', label:'Allow user workshop', hint:'Разрешить аддоны от других пользователей', type:'select', options:['0','1'], value:'1' },
+      { cvar:'sv_downloadurl', label:'FastDL URL (опц.)', hint:'URL FastDL для быстрой загрузки моделей/материалов', type:'text', value:'', optional:true },
+      { cvar:'sv_allowdownload', label:'Allow downloads', hint:'Разрешить клиенту качать ресурсы с сервера', type:'select', options:['0','1'], value:'1' },
+      { cvar:'sv_allowupload', label:'Allow uploads', hint:'Разрешить клиентам отправлять спреи и т.п.', type:'select', options:['0','1'], value:'1' },
+    ]
+  },
+];
+
+function buildCfgForm(){
+  els.cfgForm.innerHTML = CFG_SCHEMA.map((sec) => {
+    const rows = sec.fields.map((f) => {
+      const id = 'cfg_' + f.cvar;
+      let input = '';
+      if (f.type === 'select'){
+        input = '<select id="'+id+'">'+ f.options.map((o) => '<option value="'+o+'"'+(o===f.value?' selected':'')+'>'+o+'</option>').join('') +'</select>';
+      } else if (f.type === 'number'){
+        input = '<input type="number" id="'+id+'" value="'+f.value+'">';
+      } else {
+        input = '<input type="text" id="'+id+'" value="'+f.value+'">';
+      }
+      return '<div class="row">' +
+        '<label for="'+id+'">'+f.label+' <span class="cvar">'+f.cvar+'</span></label>' +
+        input +
+        '<div class="sub">'+f.hint+'</div>' +
+      '</div>';
+    }).join('');
+    return '<div class="form-section">' +
+      '<h3>'+t(sec.titleKey)+'</h3>' +
+      '<div class="sec-sub">'+t(sec.subKey)+'</div>' +
+      rows +
+    '</div>';
+  }).join('');
+  els.cfgForm.addEventListener('input', updateCfg);
+  els.cfgForm.addEventListener('change', updateCfg);
+  updateCfg();
+}
+
+function gatherCfg(){
+  const out = {};
+  CFG_SCHEMA.forEach((sec) => {
+    sec.fields.forEach((f) => {
+      const el = document.getElementById('cfg_' + f.cvar);
+      if (!el) return;
+      out[f.cvar] = el.value;
+    });
+  });
+  return out;
+}
+
+function cfgQuote(s){ return '"' + String(s).replace(/"/g, '\\"').replace(/\r?\n/g, ' ') + '"'; }
+
+function updateCfg(){
+  const v = gatherCfg();
+  const lines = [];
+  lines.push('// =================================================');
+  lines.push('// server.cfg — GMod Server Helper');
+  lines.push('// Generated: ' + new Date().toISOString().slice(0, 19).replace('T', ' '));
+  lines.push('// =================================================');
+  lines.push('');
+  const sections = [
+    { title: 'SERVER', keys: ['hostname','sv_contact','sv_tags','sv_region','sv_password'] },
+    { title: 'NETWORK & PERFORMANCE', keys: ['sv_minrate','sv_maxrate','sv_minupdaterate','sv_maxupdaterate','sv_mincmdrate','sv_maxcmdrate','net_maxfilesize'] },
+    { title: 'GAMEPLAY', keys: ['mp_timelimit','mp_winlimit','mp_maxrounds','mp_falldamage','mp_weaponstay','mp_friendlyfire','mp_autoteambalance','mp_limitteams','mp_allowspectators'] },
+    { title: 'SECURITY & RCON', keys: ['sv_lan','sv_cheats','sv_allowcslua','sv_alltalk','rcon_password','rcon_address'] },
+    { title: 'PHYSICS & WORLD', keys: ['sv_gravity','sv_airaccelerate','sv_friction','sv_maxspeed','sv_stepsize'] },
+    { title: 'LOGS & VOICE', keys: ['sv_voiceenable','sv_logbans','sv_logblocks','sv_logecho','sv_logfile','sv_log_onefile'] },
+    { title: 'WORKSHOP & DOWNLOADS', keys: ['sv_workshop_allow_other_users','sv_downloadurl','sv_allowdownload','sv_allowupload'] },
+  ];
+  sections.forEach((s) => {
+    lines.push('// ---------- ' + s.title + ' ----------');
+    s.keys.forEach((k) => {
+      if (!(k in v)) return;
+      const val = v[k];
+      if (val === '' || val === undefined) {
+        lines.push('// ' + k + ' ""');
+      } else {
+        // кавычки нужны только для hostname, sv_contact, sv_tags, sv_password, rcon_password, sv_downloadurl
+        const quoted = ['hostname','sv_contact','sv_tags','sv_password','rcon_password','sv_downloadurl'].includes(k);
+        lines.push(k + ' ' + (quoted ? cfgQuote(val) : val));
+      }
+    });
+    lines.push('');
+  });
+  lines.push('// =================================================');
+  lines.push('// End of file');
+  lines.push('// =================================================');
+  cfgText = lines.join('\n') + '\n';
+  els.cfgPre.textContent = cfgText;
+}
+
+function downloadCfg(){ if (cfgText) downloadFile('server.cfg', cfgText); }
+function copyCfg(){ if (cfgText) copyText(cfgText, els.cfgCopyBtn); }
+
+/* ================= DarkRP job generator ================= */
+const JOB_DEFAULTS = {
+  const:'TEAM_EXAMPLE', disp:'Пример', cmd:'example',
+  desc:'Описание профессии для меню F4. Опишите обязанности, требования и что игрок получает.',
+  color:'#FF7A29', salary:100, max:5, admin:0, vote:false,
+  weapons:['weapon_physcannon','weapon_physgun','gmod_tool','weapon_pistol'],
+  models:['models/player/barney.mdl','models/player/alyx.mdl'],
+  hp:100, armor:0, walk:200, run:300, jump:200, scale:1,
+  nofall:false, custom:'', customChk:false, customChkCode:'return ply:IsAdmin()',
+};
+let jobDraft = Object.assign({}, JOB_DEFAULTS);
+
+function buildJobForm(){
+  const f = jobDraft;
+  const colorId = 'job_color';
+  const section = (titleKey, subKey, inner) =>
+    '<div class="form-section"><h3>'+t(titleKey)+'</h3><div class="sec-sub">'+t(subKey)+'</div>'+inner+'</div>';
+
+  const row = (label, input, hint) => '<div class="row"><label>'+label+'</label>'+input+(hint?'<div class="sub">'+hint+'</div>':'')+'</div>';
+
+  els.jobForm.innerHTML =
+    section('job_s_id','job_s_id_sub',
+      '<div class="two-col">' +
+        row(t('job_const')+' <span class="cvar">TEAM_*</span>',
+          '<input type="text" id="j_const" value="'+f.const+'">',
+          'Имя константы. Должно начинаться с TEAM_ и быть уникальным.') +
+        row(t('job_disp'),
+          '<input type="text" id="j_disp" value="'+f.disp+'">') +
+        row(t('job_cmd')+' <span class="cvar">/job</span>',
+          '<input type="text" id="j_cmd" value="'+f.cmd+'">',
+          'Команда в чате. Только латиница, без пробелов.') +
+      '</div>'
+    ) +
+    section('job_s_look','job_s_look_sub',
+      row(t('job_color'),
+        '<input type="color" id="j_color" value="'+f.color+'">') +
+      row(t('job_desc'),
+        '<textarea id="j_desc" placeholder="'+t('job_desc_ph')+'">'+f.desc+'</textarea>') +
+      row(t('job_models'),
+        '<div class="list-add"><input type="text" id="j_models_in" placeholder="'+t('job_models_ph')+'"><button class="btn mini" type="button" id="j_models_add">'+t('btn_add')+'</button></div>' +
+        '<div class="chip-list" id="j_models_chips"></div>')
+    ) +
+    section('job_s_pay','job_s_pay_sub',
+      '<div class="two-col">' +
+        row(t('job_salary'), '<input type="number" id="j_salary" value="'+f.salary+'">', 'Зарплата каждые 10 минут.') +
+        row(t('job_max'), '<input type="number" id="j_max" value="'+f.max+'">', '0 = без ограничения.') +
+        row(t('job_admin'), '<input type="number" id="j_admin" value="'+f.admin+'">', '0 = всем, 1 = VIP, 2 = модер, 3 = админ, 4 = суперадмин.') +
+        row(t('job_vote'),
+          '<label class="chk"><input type="checkbox" id="j_vote" '+(f.vote?'checked':'')+'> '+t('job_vote')+'</label>',
+          'Игроки должны голосовать, чтобы взять профессию.') +
+      '</div>'
+    ) +
+    section('job_s_weap','job_s_weap_sub',
+      row(t('job_weap'),
+        '<div class="list-add"><input type="text" id="j_weap_in" placeholder="'+t('job_weap_ph')+'"><button class="btn mini" type="button" id="j_weap_add">'+t('btn_add')+'</button></div>' +
+        '<div class="chip-list" id="j_weap_chips"></div>')
+    ) +
+    section('job_s_stats','job_s_stats_sub',
+      '<div class="two-col">' +
+        row(t('job_hp'), '<input type="number" id="j_hp" value="'+f.hp+'">', 'Обычно 100, танки 150+, слабые 60-80.') +
+        row(t('job_armor'), '<input type="number" id="j_armor" value="'+f.armor+'">', '0 = без брони, 100 = полная броня.') +
+        row(t('job_walk'), '<input type="number" id="j_walk" value="'+f.walk+'">', 'Стандарт 200. Полицейские 220.') +
+        row(t('job_run'), '<input type="number" id="j_run" value="'+f.run+'">', 'Стандарт 300. Спецназ 400+.') +
+        row(t('job_jump'), '<input type="number" id="j_jump" value="'+f.jump+'">', 'Стандарт 200. Акробаты 300+.') +
+        row(t('job_scale'), '<input type="number" step="0.1" min="0.2" max="3" id="j_scale" value="'+f.scale+'">', '1 = обычный. 0.8 = карлик, 1.3 = гигант.') +
+        row(t('job_nofall'),
+          '<label class="chk"><input type="checkbox" id="j_nofall" '+(f.nofall?'checked':'')+'> '+t('job_nofall')+'</label>') +
+      '</div>'
+    ) +
+    section('job_s_extra','job_s_extra_sub',
+      row(t('job_custom'),
+        '<textarea id="j_custom" placeholder="'+t('job_custom_ph')+'">'+f.custom+'</textarea>',
+        'Любой Lua, выполняемый при спавне. Доступна переменная ply. Примеры: ply:GodEnable(), ply:StripWeapons().') +
+      row(t('job_chk'),
+        '<label class="chk"><input type="checkbox" id="j_chk" '+(f.customChk?'checked':'')+'> '+t('job_chk_enable')+'</label>' +
+        '<textarea id="j_chk_code" placeholder="'+t('job_chk_ph')+'" '+(f.customChk?'':'style="display:none;"')+'>'+f.customChkCode+'</textarea>')
+    );
+
+  // handlers
+  const bind = (id, prop, parser) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const ev = el.type === 'checkbox' ? 'change' : 'input';
+    el.addEventListener(ev, () => {
+      jobDraft[prop] = parser ? parser(el.value, el) : el.value;
+      renderJobChips(); updateJob();
+    });
+  };
+  bind('j_const','const');
+  bind('j_disp','disp');
+  bind('j_cmd','cmd');
+  bind('j_desc','desc');
+  bind('j_color','color');
+  bind('j_salary','salary', (v) => parseInt(v)||0);
+  bind('j_max','max', (v) => parseInt(v)||0);
+  bind('j_admin','admin', (v) => parseInt(v)||0);
+  bind('j_vote','vote', (v, el) => el.checked);
+  bind('j_hp','hp', (v) => parseInt(v)||0);
+  bind('j_armor','armor', (v) => parseInt(v)||0);
+  bind('j_walk','walk', (v) => parseInt(v)||0);
+  bind('j_run','run', (v) => parseInt(v)||0);
+  bind('j_jump','jump', (v) => parseInt(v)||0);
+  bind('j_scale','scale', (v) => parseFloat(v)||1);
+  bind('j_nofall','nofall', (v, el) => el.checked);
+  bind('j_custom','custom');
+  bind('j_chk','customChk', (v, el) => {
+    document.getElementById('j_chk_code').style.display = el.checked ? '' : 'none';
+    return el.checked;
+  });
+  bind('j_chk_code','customChkCode');
+
+  const addChip = (inputId, arr) => {
+    const input = document.getElementById(inputId);
+    const val = input.value.trim();
+    if (!val) return;
+    if (!arr.includes(val)) arr.push(val);
+    input.value = '';
+    renderJobChips(); updateJob();
+  };
+  document.getElementById('j_weap_add').addEventListener('click', () => addChip('j_weap_in', jobDraft.weapons));
+  document.getElementById('j_models_add').addEventListener('click', () => addChip('j_models_in', jobDraft.models));
+  document.getElementById('j_weap_in').addEventListener('keydown', (e) => { if (e.key === 'Enter'){ e.preventDefault(); addChip('j_weap_in', jobDraft.weapons); } });
+  document.getElementById('j_models_in').addEventListener('keydown', (e) => { if (e.key === 'Enter'){ e.preventDefault(); addChip('j_models_in', jobDraft.models); } });
+
+  renderJobChips();
+  updateJob();
+}
+
+function renderJobChips(){
+  const mkChip = (list, idx, label) =>
+    '<div class="chip"><b>'+label+'</b><span class="x" data-list="'+list+'" data-idx="'+idx+'">✕</span></div>';
+  document.getElementById('j_weap_chips').innerHTML =
+    jobDraft.weapons.map((w,i) => mkChip('weap', i, w)).join('');
+  document.getElementById('j_models_chips').innerHTML =
+    jobDraft.models.map((m,i) => mkChip('mod', i, m)).join('');
+  document.querySelectorAll('#j_weap_chips .x, #j_models_chips .x').forEach((x) => {
+    x.addEventListener('click', () => {
+      const idx = parseInt(x.dataset.idx);
+      if (x.dataset.list === 'weap') jobDraft.weapons.splice(idx,1);
+      else jobDraft.models.splice(idx,1);
+      renderJobChips(); updateJob();
+    });
+  });
+}
+
+function resetJob(){
+  jobDraft = Object.assign({}, JOB_DEFAULTS);
+  buildJobForm();
+}
+
+function luaStr(s){ return '"' + String(s).replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\r?\n/g,' ') + '"'; }
+
+function buildJobLua(job){
+  const j = job;
+  const r = parseInt(j.color.slice(1,3),16);
+  const g = parseInt(j.color.slice(3,5),16);
+  const b = parseInt(j.color.slice(5,7),16);
+  const tbl = [];
+  tbl.push('    color = Color(' + r + ', ' + g + ', ' + b + ', 255),');
+  tbl.push('    model = {' + j.models.map((m) => '"' + m.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"').join(', ') + '},');
+  tbl.push('    description = [[' + j.desc.replace(/\]\]/g, '] ]') + ']],');
+  tbl.push('    weapons = {' + j.weapons.map((w) => '"' + w + '"').join(', ') + '},');
+  tbl.push('    command = "' + j.cmd + '",');
+  tbl.push('    max = ' + j.max + ',');
+  tbl.push('    salary = ' + j.salary + ',');
+  tbl.push('    admin = ' + j.admin + ',');
+  tbl.push('    vote = ' + (j.vote ? 'true' : 'false') + ',');
+  tbl.push('    hasLicense = false,');
+  tbl.push('    ammo = {},');
+  tbl.push('');
+  tbl.push('    -- ============ Custom hooks ============');
+  tbl.push('    PlayerSpawn = function(ply)');
+  tbl.push('        ply:SetHealth(' + j.hp + ')');
+  tbl.push('        ply:SetMaxHealth(' + j.hp + ')');
+  if (j.armor > 0) tbl.push('        ply:SetArmor(' + j.armor + ')');
+  tbl.push('        ply:SetWalkSpeed(' + j.walk + ')');
+  tbl.push('        ply:SetRunSpeed(' + j.run + ')');
+  tbl.push('        ply:SetJumpPower(' + j.jump + ')');
+  if (j.scale && j.scale !== 1) tbl.push('        ply:SetModelScale(' + j.scale + ', 0)');
+  if (j.nofall) tbl.push('        ply.fallNoDamage = true');
+  if (j.custom && j.custom.trim()){
+    tbl.push('        -- user custom code:');
+    j.custom.split(/\r?\n/).forEach((ln) => tbl.push('        ' + ln));
+  }
+  tbl.push('    end,');
+  if (j.nofall){
+    tbl.push('    EntityTakeDamage = function(target, dmginfo)');
+    tbl.push('        if target:IsPlayer() and target.fallNoDamage and dmginfo:IsFallDamage() then');
+    tbl.push('            dmginfo:SetDamage(0)');
+    tbl.push('        end');
+    tbl.push('    end,');
+  }
+  if (j.customChk && j.customChkCode && j.customChkCode.trim()){
+    tbl.push('    customCheck = function(ply)');
+    j.customChkCode.split(/\r?\n/).forEach((ln) => tbl.push('        ' + ln));
+    tbl.push('    end,');
+    tbl.push('    CustomCheckFailMsg = "У тебя нет прав на эту профессию.",');
+  }
+  return j.const + ' = DarkRP.createJob(' + luaStr(j.disp) + ', {\n' + tbl.join('\n') + '\n})';
+}
+
+function renderJobs(){
+  if (jobs.length === 0){
+    els.jobsList.innerHTML = '<div style="color:var(--text-faint);font-size:12.5px;padding:8px 4px;">Список профессий пуст. Заполни форму и нажми «Добавить в список».</div>';
+  } else {
+    els.jobsList.innerHTML = jobs.map((j, idx) =>
+      '<div class="job-card">' +
+        '<div class="job-color" style="background:'+j.color+'"></div>' +
+        '<div class="job-info">' +
+          '<b>'+escapeHtml(j.const)+'</b>' +
+          '<span>'+escapeHtml(j.disp)+' · /'+escapeHtml(j.cmd)+' · '+j.salary+'$ · HP '+j.hp+'</span>' +
+        '</div>' +
+        '<div class="job-actions">' +
+          '<button class="btn ghost mini" data-act="up" data-idx="'+idx+'">↑</button>' +
+          '<button class="btn ghost mini" data-act="down" data-idx="'+idx+'">↓</button>' +
+          '<button class="btn ghost mini" data-act="del" data-idx="'+idx+'" style="color:var(--red);border-color:rgba(255,79,94,.35);">✕</button>' +
+        '</div>' +
+      '</div>'
+    ).join('');
+    els.jobsList.querySelectorAll('button[data-act]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.idx);
+        const act = btn.dataset.act;
+        if (act === 'del') jobs.splice(idx,1);
+        else if (act === 'up' && idx > 0) { const tmp = jobs[idx-1]; jobs[idx-1] = jobs[idx]; jobs[idx] = tmp; }
+        else if (act === 'down' && idx < jobs.length-1) { const tmp = jobs[idx+1]; jobs[idx+1] = jobs[idx]; jobs[idx] = tmp; }
+        renderJobs();
+      });
+    });
+  }
+  updateJob();
+}
+
+function addJob(){
+  // валидация
+  if (!/^TEAM_[A-Z0-9_]+$/.test(jobDraft.const)){
+    alert('Константа должна начинаться с TEAM_ и содержать только заглавные буквы, цифры и _');
+    return;
+  }
+  if (!/^[a-z0-9_]+$/.test(jobDraft.cmd)){
+    alert('Команда должна содержать только маленькие латинские буквы, цифры и _');
+    return;
+  }
+  if (jobs.some((j) => j.const === jobDraft.const)){
+    alert('Константа ' + jobDraft.const + ' уже используется. Придумай другую.');
+    return;
+  }
+  if (jobs.some((j) => j.cmd === jobDraft.cmd)){
+    alert('Команда /' + jobDraft.cmd + ' уже используется.');
+    return;
+  }
+  if (jobDraft.models.length === 0){
+    alert('Добавь хотя бы одну модель.');
+    return;
+  }
+  jobs.push(JSON.parse(JSON.stringify(jobDraft)));
+  renderJobs();
+}
+
+function updateJob(){
+  const head =
+    '-- jobs.lua · GMod Server Helper\n' +
+    '-- Generated: ' + new Date().toISOString().slice(0, 19).replace('T',' ') + '\n' +
+    '-- Jobs: ' + jobs.length + '\n' +
+    '-- Put into: garrysmod/addons/<your-addon>/lua/autorun/server/jobs.lua\n\n';
+  const body = jobs.map((j) => buildJobLua(j)).join('\n\n');
+  jobText = head + body + (body ? '\n' : '');
+  els.jobPre.textContent = jobText || (lang === 'ru' ? '-- Добавь хотя бы одну профессию' : '-- Add at least one job');
+  els.jobCount.textContent = jobs.length;
+}
+
+function downloadJobs(){
+  if (jobs.length === 0) return;
+  downloadFile('jobs.lua', jobText);
+}
+function copyJobs(){ if (jobs.length) copyText(jobText, els.jobCopyBtn); }
+
 /* ---------- навигация / язык ---------- */
 function switchView(name){
-  $('view-helper').hidden = name !== 'helper';
-  $('view-lua').hidden = name !== 'lua';
+  ['helper','lua','cfg','job'].forEach((v) => {
+    const el = $('view-' + v);
+    if (el) el.hidden = v !== name;
+  });
   document.querySelectorAll('.nav-item[data-view]').forEach((n) => n.classList.toggle('active', n.dataset.view === name));
   els.viewSelect.value = name;
 }
 
-log('скрипт загружен (v4: i18n + lua generator)');
+log('скрипт загружен (v5: + server.cfg + DarkRP jobs)');
 applyLang();
 switchView('helper');
 
@@ -803,6 +1425,15 @@ els.toLuaBtn.addEventListener('click', () => {
   }
   switchView('lua');
 });
+
+els.cfgCopyBtn.addEventListener('click', copyCfg);
+els.cfgDlBtn.addEventListener('click', downloadCfg);
+
+els.jobAddBtn.addEventListener('click', addJob);
+els.jobResetBtn.addEventListener('click', resetJob);
+els.jobCopyBtn.addEventListener('click', copyJobs);
+els.jobDlBtn.addEventListener('click', downloadJobs);
+
 els.viewSelect.addEventListener('change', () => switchView(els.viewSelect.value));
 document.querySelectorAll('.nav-item[data-view]').forEach((n) => {
   n.addEventListener('click', () => switchView(n.dataset.view));
