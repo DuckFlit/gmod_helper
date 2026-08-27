@@ -434,7 +434,7 @@ const L = {
     err_proxies:'Не получилось загрузить данные через публичные CORS‑прокси.',
     err_sizes:'Список аддонов прочитан, но ни один прокси не пропустил POST‑запрос к Steam API.',
 
-    // server.cfg
+    // server.cfg — заголовки секций
     eyebrow_cfg:'Инструмент 03 — server.cfg Generator', h1_cfg:'server.cfg с пояснениями',
     lede_cfg:'Соберите server.cfg из блоков: сеть, геймплей, безопасность, физика. Все значения с комментариями. Скопируйте готовый файл и положите в <code>garrysmod/cfg/server.cfg</code>.',
     cfg_preview:'Превью', btn_dl_cfg:'Скачать server.cfg',
@@ -446,13 +446,57 @@ const L = {
     cfg_s_phys:'Физика и мир', cfg_s_phys_sub:'Гравитация, скорость, шаг. Осторожно с sv_gravity: нестандартное значение ломает прыжки.',
     cfg_s_log:'Логи', cfg_s_log_sub:'Что логировать. Для продакшн‑сервера включайте всё.',
     cfg_s_ws:'Workshop', cfg_s_ws_sub:'Разрешение пользовательских аддонов и URL для FastDL.',
-    // DarkRP job
+    // server.cfg — подсказки к полям
+    cfg_h_hostname:'Отображаемое имя сервера в браузере',
+    cfg_h_contact:'Email или Steam для связи',
+    cfg_h_tags:'Через запятую — видно в поиске',
+    cfg_h_region:'255 = авто, 0=US-East, 1=US-West, 2=South America, 3=Europe, 4=Asia, 5=Australia, 6=Middle East, 7=Africa',
+    cfg_h_password:'Оставь пустым для публичного сервера',
+    cfg_h_minrate:'Минимальный рейт клиента (байт/с). 3500 — для слабых каналов',
+    cfg_h_maxrate:'Максимальный рейт. 0 = без ограничения (рекомендуется)',
+    cfg_h_minupdaterate:'Минимум тиков обновления/сек',
+    cfg_h_maxupdaterate:'60 — стандарт для 60‑tick серверов',
+    cfg_h_mincmdrate:'Минимум команд/сек от клиента',
+    cfg_h_maxcmdrate:'Обычно = updaterate',
+    cfg_h_maxfilesize:'Максимальный размер файла через FastDL (МБ)',
+    cfg_h_timelimit:'Минут на карту. 0 = без лимита',
+    cfg_h_winlimit:'Количество побед для смены карты. 0 = выкл.',
+    cfg_h_maxrounds:'Количество раундов. 0 = выкл.',
+    cfg_h_falldamage:'Урон от падения. 1 = вкл., 0 = выкл.',
+    cfg_h_weaponstay:'Оружие остаётся после подбора. 1 = да',
+    cfg_h_friendlyfire:'Урон по своим. 1 = вкл.',
+    cfg_h_autoteambalance:'Автобаланс команд',
+    cfg_h_limitteams:'Макс. разница в числе игроков между командами',
+    cfg_h_allowspectators:'Разрешить наблюдателей',
+    cfg_h_lan:'1 = только локальная сеть. Для публичного сервера 0',
+    cfg_h_cheats:'Читы (noclip, god). На сервере всегда 0!',
+    cfg_h_allowcslua:'Разрешить выполнение lua в консоли клиента. Лучше 0',
+    cfg_h_alltalk:'Голосовой чат между командами. 1 = все слышат всех',
+    cfg_h_rcon_password:'Пароль для удалённого администрирования. ОБЯЗАТЕЛЬНО МЕНЯЙ!',
+    cfg_h_rcon_address:'IP сервера для RCON (обычно авто)',
+    cfg_h_gravity:'Гравитация. 600 — стандарт GMod/Source',
+    cfg_h_airaccelerate:'Ускорение в воздухе (10 — стандарт)',
+    cfg_h_friction:'Трение по земле (4 — стандарт)',
+    cfg_h_maxspeed:'Макс. скорость игрока (320 — стандарт Source)',
+    cfg_h_stepsize:'Высота шага (18 — стандарт)',
+    cfg_h_voiceenable:'Включить голос. 1 = вкл.',
+    cfg_h_logbans:'Логировать баны. 1 = вкл.',
+    cfg_h_logblocks:'Логировать блокированные запросы',
+    cfg_h_logecho:'Дублировать логи в консоль сервера',
+    cfg_h_logfile:'Писать логи в файл',
+    cfg_h_log_onefile:'Один файл на запуск сервера',
+    cfg_h_workshop:'Разрешить аддоны от других пользователей',
+    cfg_h_downloadurl:'URL FastDL для быстрой загрузки моделей/материалов',
+    cfg_h_allowdownload:'Разрешить клиенту качать ресурсы с сервера',
+    cfg_h_allowupload:'Разрешить клиентам отправлять спреи и т.п.',
+
+    // DarkRP job — заголовки секций
     eyebrow_job:'Инструмент 04 — DarkRP Job Generator', h1_job:'Профессии DarkRP за 30 секунд',
     lede_job:'Заполни карточку: HP, броня, скорость, прыжок, масштаб модели, оружие, модели и кастомный Lua. Добавь несколько джобов в список и выгрузи всё одним jobs.lua.',
     job_lines:'профессий в jobs.lua', btn_dl_job:'Скачать jobs.lua',
-    job_path:'Положи файл в <code>garrysmod/addons/myrp/lua/autorun/server/jobs.lua</code> (или любой другой autorun-папке на сервере).',
+    job_path:'Положи файл в <code>garrysmod/addons/myrp/lua/autorun/server/jobs.lua</code> (или любой другой autorun‑папке на сервере).',
     btn_addjob:'+ Добавить в список', btn_reset:'Очистить форму', btn_add:'+ Добавить',
-    job_s_id:'Идентификатор', job_s_id_sub:'Константа и команда, по которой игроки выбирают профессию.',
+    job_s_id:'Идентификатор', job_s_id_sub:'Константа, команда и категория, по которым игроки выбирают профессию.',
     job_s_look:'Внешний вид', job_s_look_sub:'Модели игрока, цвет в F4 и описание.',
     job_s_pay:'Зарплата и лимиты', job_s_pay_sub:'Деньги каждые 10 минут, максимум игроков, права.',
     job_s_weap:'Оружие', job_s_weap_sub:'Список оружий, которые выдаются при спавне.',
@@ -461,6 +505,7 @@ const L = {
     job_const:'Константа', job_const_ph:'TEAM_EXAMPLE',
     job_disp:'Отображаемое имя', job_disp_ph:'Пример',
     job_cmd:'Команда', job_cmd_ph:'example',
+    job_category:'Категория', job_category_ph:'Citizens',
     job_desc:'Описание', job_desc_ph:'Описание профессии для меню F4…',
     job_color:'Цвет', job_salary:'Зарплата', job_max:'Макс. игроков', job_admin:'Админ‑уровень', job_vote:'Голосование',
     job_weap:'Оружие (имя SWEP)', job_weap_ph:'weapon_physgun',
@@ -472,7 +517,31 @@ const L = {
     job_custom_ph:'-- ply:SetModelScale(1.3, 0)\n-- ply:GodEnable()',
     job_chk:'Допуск (customCheck)', job_chk_ph:'return ply:IsAdmin()',
     job_chk_enable:'Только для определённой группы',
+    // DarkRP job — подсказки к полям
+    job_const_hint:'Имя константы. Должно начинаться с TEAM_ и быть уникальным.',
+    job_cmd_hint:'Команда в чате. Только латиница, без пробелов.',
+    job_category_hint:'Группа в меню F4 (Citizens, Government, Criminal и т.д.). У одинаковых категорий будут объединены.',
+    job_salary_hint:'Зарплата каждые 10 минут.',
+    job_max_hint:'Максимум игроков с этой профессией. 0 = без ограничения.',
+    job_admin_hint:'0 = всем, 1 = VIP, 2 = модер, 3 = админ, 4 = суперадмин.',
+    job_vote_hint:'Игроки должны голосовать, чтобы взять профессию.',
+    job_hp_hint:'Обычно 100, танки 150+, слабые 60‑80.',
+    job_armor_hint:'0 = без брони, 100 = полная броня.',
+    job_walk_hint:'Скорость ходьбы. Стандарт 200, полицейские 220.',
+    job_run_hint:'Скорость бега. Стандарт 300, спецназ 400+.',
+    job_jump_hint:'Сила прыжка. Стандарт 200, акробаты 300+.',
+    job_scale_hint:'1 = обычный. 0.8 = карлик, 1.3 = гигант.',
+    job_custom_hint:'Любой Lua, выполняемый при спавне. Доступна переменная ply. Примеры: ply:GodEnable(), ply:StripWeapons().',
+    jobs_empty:'Список профессий пуст. Заполни форму и нажми «+ Добавить в список».',
+    job_fail_msg:'У тебя нет прав на эту профессию.',
+    // DarkRP job — валидация
+    val_const:'Константа должна начинаться с TEAM_ и содержать только заглавные буквы, цифры и _',
+    val_cmd:'Команда должна содержать только маленькие латинские буквы, цифры и _',
+    val_const_dup:'Константа уже используется: ',
+    val_cmd_dup:'Команда уже используется: ',
+    val_model:'Добавь хотя бы одну модель.',
   },
+
   en: {
     nav_tools:'Tools', tool_helper:'Collection Helper', tool_lua:'Workshop.lua',
     tool_cfg:'server.cfg', tool_job:'DarkRP job',
@@ -508,6 +577,7 @@ const L = {
     err_proxies:'Could not load data via public CORS proxies.',
     err_sizes:'Addon list was read, but no proxy passed the POST request to the Steam API.',
 
+    // server.cfg — section headers
     eyebrow_cfg:'Tool 03 — server.cfg Generator', h1_cfg:'server.cfg with explanations',
     lede_cfg:'Assemble a server.cfg from blocks: network, gameplay, security, physics. Every value is commented. Copy the file and put it into <code>garrysmod/cfg/server.cfg</code>.',
     cfg_preview:'Preview', btn_dl_cfg:'Download server.cfg',
@@ -519,12 +589,57 @@ const L = {
     cfg_s_phys:'Physics & world', cfg_s_phys_sub:'Gravity, speed, step. Careful with sv_gravity: non-default values break jumps.',
     cfg_s_log:'Logs', cfg_s_log_sub:'What to log. Enable everything on production servers.',
     cfg_s_ws:'Workshop', cfg_s_ws_sub:'Allow user addons and FastDL URL.',
+    // server.cfg — field hints
+    cfg_h_hostname:'Server name shown in the browser',
+    cfg_h_contact:'Email or Steam for contact',
+    cfg_h_tags:'Comma-separated — visible in search',
+    cfg_h_region:'255 = auto, 0=US-East, 1=US-West, 2=South America, 3=Europe, 4=Asia, 5=Australia, 6=Middle East, 7=Africa',
+    cfg_h_password:'Leave empty for a public server',
+    cfg_h_minrate:'Minimum client rate (bytes/s). 3500 — for weak connections',
+    cfg_h_maxrate:'Maximum rate. 0 = no limit (recommended)',
+    cfg_h_minupdaterate:'Minimum update ticks per second',
+    cfg_h_maxupdaterate:'60 — standard for 60-tick servers',
+    cfg_h_mincmdrate:'Minimum commands per second from client',
+    cfg_h_maxcmdrate:'Usually = updaterate',
+    cfg_h_maxfilesize:'Maximum file size via FastDL (MB)',
+    cfg_h_timelimit:'Minutes per map. 0 = no limit',
+    cfg_h_winlimit:'Wins needed to change map. 0 = off',
+    cfg_h_maxrounds:'Number of rounds. 0 = off',
+    cfg_h_falldamage:'Fall damage. 1 = on, 0 = off',
+    cfg_h_weaponstay:'Weapon stays after pickup. 1 = yes',
+    cfg_h_friendlyfire:'Friendly fire. 1 = on',
+    cfg_h_autoteambalance:'Auto team balance',
+    cfg_h_limitteams:'Max player count difference between teams',
+    cfg_h_allowspectators:'Allow spectators',
+    cfg_h_lan:'1 = LAN only. For public server use 0',
+    cfg_h_cheats:'Cheats (noclip, god). Always 0 on server!',
+    cfg_h_allowcslua:'Allow client console lua. Better 0',
+    cfg_h_alltalk:'Voice chat between teams. 1 = everyone hears everyone',
+    cfg_h_rcon_password:'Password for remote administration. MUST CHANGE!',
+    cfg_h_rcon_address:'Server IP for RCON (usually auto)',
+    cfg_h_gravity:'Gravity. 600 — GMod/Source standard',
+    cfg_h_airaccelerate:'Air acceleration (10 — standard)',
+    cfg_h_friction:'Ground friction (4 — standard)',
+    cfg_h_maxspeed:'Max player speed (320 — Source standard)',
+    cfg_h_stepsize:'Step height (18 — standard)',
+    cfg_h_voiceenable:'Enable voice. 1 = on',
+    cfg_h_logbans:'Log bans. 1 = on',
+    cfg_h_logblocks:'Log blocked queries',
+    cfg_h_logecho:'Echo logs to server console',
+    cfg_h_logfile:'Write logs to file',
+    cfg_h_log_onefile:'One log file per server start',
+    cfg_h_workshop:'Allow addons from other users',
+    cfg_h_downloadurl:'FastDL URL for fast model/material downloads',
+    cfg_h_allowdownload:'Allow client to download resources from server',
+    cfg_h_allowupload:'Allow clients to upload sprays etc.',
+
+    // DarkRP job — section headers
     eyebrow_job:'Tool 04 — DarkRP Job Generator', h1_job:'DarkRP jobs in 30 seconds',
     lede_job:'Fill the card: HP, armor, speed, jump, model scale, weapons, models and custom Lua. Add several jobs to the list and export them all as one jobs.lua.',
     job_lines:'jobs in jobs.lua', btn_dl_job:'Download jobs.lua',
     job_path:'Put the file into <code>garrysmod/addons/myrp/lua/autorun/server/jobs.lua</code> (or any autorun folder on the server).',
     btn_addjob:'+ Add to list', btn_reset:'Reset form', btn_add:'+ Add',
-    job_s_id:'Identifier', job_s_id_sub:'Constant and chat command used to pick the job.',
+    job_s_id:'Identifier', job_s_id_sub:'Constant, command and category used to pick the job.',
     job_s_look:'Appearance', job_s_look_sub:'Player models, F4 menu color and description.',
     job_s_pay:'Salary & limits', job_s_pay_sub:'Money every 10 minutes, player cap, rights.',
     job_s_weap:'Weapons', job_s_weap_sub:'Weapons given on spawn.',
@@ -533,6 +648,7 @@ const L = {
     job_const:'Constant', job_const_ph:'TEAM_EXAMPLE',
     job_disp:'Display name', job_disp_ph:'Example',
     job_cmd:'Command', job_cmd_ph:'example',
+    job_category:'Category', job_category_ph:'Citizens',
     job_desc:'Description', job_desc_ph:'F4 menu description…',
     job_color:'Color', job_salary:'Salary', job_max:'Max players', job_admin:'Admin level', job_vote:'Vote required',
     job_weap:'Weapon (SWEP name)', job_weap_ph:'weapon_physgun',
@@ -544,6 +660,29 @@ const L = {
     job_custom_ph:'-- ply:SetModelScale(1.3, 0)\n-- ply:GodEnable()',
     job_chk:'Access check (customCheck)', job_chk_ph:'return ply:IsAdmin()',
     job_chk_enable:'Limit to a specific group',
+    // DarkRP job — field hints
+    job_const_hint:'Constant name. Must start with TEAM_ and be unique.',
+    job_cmd_hint:'Chat command. Latin only, no spaces.',
+    job_category_hint:'F4 menu group (Citizens, Government, Criminal etc.). Jobs with the same category are grouped together.',
+    job_salary_hint:'Salary every 10 minutes.',
+    job_max_hint:'Maximum players with this job. 0 = no limit.',
+    job_admin_hint:'0 = everyone, 1 = VIP, 2 = mod, 3 = admin, 4 = superadmin.',
+    job_vote_hint:'Players must vote to get the job.',
+    job_hp_hint:'Usually 100, tanks 150+, weak 60-80.',
+    job_armor_hint:'0 = no armor, 100 = full armor.',
+    job_walk_hint:'Walk speed. Standard 200, Police 220.',
+    job_run_hint:'Run speed. Standard 300, SWAT 400+.',
+    job_jump_hint:'Jump power. Standard 200, Acrobats 300+.',
+    job_scale_hint:'1 = default. 0.8 = dwarf, 1.3 = giant.',
+    job_custom_hint:'Any Lua executed on spawn. Variable ply is available. Examples: ply:GodEnable(), ply:StripWeapons().',
+    jobs_empty:'Job list is empty. Fill the form and click "+ Add to list".',
+    job_fail_msg:'You do not have access to this job.',
+    // DarkRP job — validation
+    val_const:'Constant must start with TEAM_ and contain only uppercase letters, numbers and _',
+    val_cmd:'Command must contain only lowercase latin letters, numbers and _',
+    val_const_dup:'Constant already used: ',
+    val_cmd_dup:'Command already used: ',
+    val_model:'Add at least one model.',
   }
 };
 let lang = localStorage.getItem('gsh_lang') || 'ru';
@@ -958,82 +1097,81 @@ const CFG_SCHEMA = [
   {
     key: 'server', titleKey: 'cfg_s_server', subKey: 'cfg_s_server_sub',
     fields: [
-      { cvar:'hostname', label:'Hostname', hint:'Отображаемое имя сервера в браузере', type:'text', value:'My GMod Server' },
-      { cvar:'sv_contact', label:'Contact', hint:'Email или Steam для связи', type:'text', value:'admin@example.com' },
-      { cvar:'sv_tags', label:'Tags', hint:'Через запятую — видно в поиске', type:'text', value:'rp,gmod,fun' },
-      { cvar:'sv_region', label:'Region', hint:'255 = auto, 0=US-East, 1=US-West, 2=South America, 3=Europe, 4=Asia, 5=Australia, 6=Middle East, 7=Africa', type:'number', value:255 },
-      { cvar:'sv_password', label:'Password (опц.)', hint:'Оставь пустым для публичного сервера', type:'text', value:'', optional:true },
+      { cvar:'hostname', label:'Hostname', hintKey:'cfg_h_hostname', type:'text', value:'My GMod Server' },
+      { cvar:'sv_contact', label:'Contact', hintKey:'cfg_h_contact', type:'text', value:'admin@example.com' },
+      { cvar:'sv_tags', label:'Tags', hintKey:'cfg_h_tags', type:'text', value:'rp,gmod,fun' },
+      { cvar:'sv_region', label:'Region', hintKey:'cfg_h_region', type:'number', value:255 },
+      { cvar:'sv_password', label:'Password (optional)', hintKey:'cfg_h_password', type:'text', value:'', optional:true },
     ]
   },
   {
     key: 'net', titleKey: 'cfg_s_net', subKey: 'cfg_s_net_sub',
     fields: [
-      { cvar:'sv_minrate', label:'Min rate', hint:'Минимальный рейт клиента (байт/с). 3500 — для слабых каналов', type:'number', value:3500 },
-      { cvar:'sv_maxrate', label:'Max rate', hint:'Максимальный рейт. 0 = нет ограничения (рекомендуется)', type:'number', value:0 },
-      { cvar:'sv_minupdaterate', label:'Min updaterate', hint:'Минимум тиков обновления/сек', type:'number', value:10 },
-      { cvar:'sv_maxupdaterate', label:'Max updaterate', hint:'60 — стандарт для 60-tick серверов', type:'number', value:60 },
-      { cvar:'sv_mincmdrate', label:'Min cmdrate', hint:'Минимум команд/сек от клиента', type:'number', value:10 },
-      { cvar:'sv_maxcmdrate', label:'Max cmdrate', hint:'Обычно = updaterate', type:'number', value:60 },
-      { cvar:'net_maxfilesize', label:'Max FastDL file size', hint:'Максимальный размер файла через FastDL (МБ)', type:'number', value:64 },
+      { cvar:'sv_minrate', label:'Min rate', hintKey:'cfg_h_minrate', type:'number', value:3500 },
+      { cvar:'sv_maxrate', label:'Max rate', hintKey:'cfg_h_maxrate', type:'number', value:0 },
+      { cvar:'sv_minupdaterate', label:'Min updaterate', hintKey:'cfg_h_minupdaterate', type:'number', value:10 },
+      { cvar:'sv_maxupdaterate', label:'Max updaterate', hintKey:'cfg_h_maxupdaterate', type:'number', value:60 },
+      { cvar:'sv_mincmdrate', label:'Min cmdrate', hintKey:'cfg_h_mincmdrate', type:'number', value:10 },
+      { cvar:'sv_maxcmdrate', label:'Max cmdrate', hintKey:'cfg_h_maxcmdrate', type:'number', value:60 },
+      { cvar:'net_maxfilesize', label:'Max FastDL file size', hintKey:'cfg_h_maxfilesize', type:'number', value:64 },
     ]
   },
   {
     key: 'game', titleKey: 'cfg_s_game', subKey: 'cfg_s_game_sub',
     fields: [
-      { cvar:'mp_timelimit', label:'Map time limit', hint:'Минут на карту. 0 = без лимита', type:'number', value:30 },
-      { cvar:'mp_winlimit', label:'Win limit', hint:'Количество побед для смены карты. 0 = выкл.', type:'number', value:0 },
-      { cvar:'mp_maxrounds', label:'Max rounds', hint:'Количество раундов. 0 = выкл.', type:'number', value:0 },
-      { cvar:'mp_falldamage', label:'Fall damage', hint:'Урон от падения. 1 = вкл., 0 = выкл.', type:'select', options:['0','1'], value:'1' },
-      { cvar:'mp_weaponstay', label:'Weapon stay', hint:'Оружие остаётся после подбора. 1 = да', type:'select', options:['0','1'], value:'0' },
-      { cvar:'mp_friendlyfire', label:'Friendly fire', hint:'Урон по своим. 1 = вкл.', type:'select', options:['0','1'], value:'0' },
-      { cvar:'mp_autoteambalance', label:'Auto team balance', hint:'Автобаланс команд', type:'select', options:['0','1'], value:'1' },
-      { cvar:'mp_limitteams', label:'Limit teams', hint:'Макс. разница в числе игроков между командами', type:'number', value:2 },
-      { cvar:'mp_allowspectators', label:'Allow spectators', hint:'Разрешить наблюдателей', type:'select', options:['0','1'], value:'1' },
+      { cvar:'mp_timelimit', label:'Map time limit', hintKey:'cfg_h_timelimit', type:'number', value:30 },
+      { cvar:'mp_winlimit', label:'Win limit', hintKey:'cfg_h_winlimit', type:'number', value:0 },
+      { cvar:'mp_maxrounds', label:'Max rounds', hintKey:'cfg_h_maxrounds', type:'number', value:0 },
+      { cvar:'mp_falldamage', label:'Fall damage', hintKey:'cfg_h_falldamage', type:'select', options:['0','1'], value:'1' },
+      { cvar:'mp_weaponstay', label:'Weapon stay', hintKey:'cfg_h_weaponstay', type:'select', options:['0','1'], value:'0' },
+      { cvar:'mp_friendlyfire', label:'Friendly fire', hintKey:'cfg_h_friendlyfire', type:'select', options:['0','1'], value:'0' },
+      { cvar:'mp_autoteambalance', label:'Auto team balance', hintKey:'cfg_h_autoteambalance', type:'select', options:['0','1'], value:'1' },
+      { cvar:'mp_limitteams', label:'Limit teams', hintKey:'cfg_h_limitteams', type:'number', value:2 },
+      { cvar:'mp_allowspectators', label:'Allow spectators', hintKey:'cfg_h_allowspectators', type:'select', options:['0','1'], value:'1' },
     ]
   },
   {
     key: 'sec', titleKey: 'cfg_s_sec', subKey: 'cfg_s_sec_sub',
     fields: [
-      { cvar:'sv_lan', label:'LAN only', hint:'1 = только локальная сеть. Для публичного сервера 0', type:'select', options:['0','1'], value:'0' },
-      { cvar:'sv_cheats', label:'Cheats', hint:'Читы (noclip, god). На сервере всегда 0!', type:'select', options:['0','1'], value:'0' },
-      { cvar:'sv_allowcslua', label:'Allow client lua', hint:'Разрешить выполнение lua в консоли клиента. Лучше 0', type:'select', options:['0','1'], value:'0' },
-      { cvar:'sv_alltalk', label:'All talk', hint:'Голосовой чат между командами. 1 = все слышат всех', type:'select', options:['0','1'], value:'0' },
-      { cvar:'rcon_password', label:'RCON password', hint:'Пароль для удалённого администрирования. ОБЯЗАТЕЛЬНО МЕНЯЙ!', type:'text', value:'CHANGE_ME_NOW' },
-      { cvar:'rcon_address', label:'RCON address (опц.)', hint:'IP сервера для RCON (обычно авто)', type:'text', value:'', optional:true },
+      { cvar:'sv_lan', label:'LAN only', hintKey:'cfg_h_lan', type:'select', options:['0','1'], value:'0' },
+      { cvar:'sv_cheats', label:'Cheats', hintKey:'cfg_h_cheats', type:'select', options:['0','1'], value:'0' },
+      { cvar:'sv_allowcslua', label:'Allow client lua', hintKey:'cfg_h_allowcslua', type:'select', options:['0','1'], value:'0' },
+      { cvar:'sv_alltalk', label:'All talk', hintKey:'cfg_h_alltalk', type:'select', options:['0','1'], value:'0' },
+      { cvar:'rcon_password', label:'RCON password', hintKey:'cfg_h_rcon_password', type:'text', value:'CHANGE_ME_NOW' },
+      { cvar:'rcon_address', label:'RCON address (optional)', hintKey:'cfg_h_rcon_address', type:'text', value:'', optional:true },
     ]
   },
   {
     key: 'phys', titleKey: 'cfg_s_phys', subKey: 'cfg_s_phys_sub',
     fields: [
-      { cvar:'sv_gravity', label:'Gravity', hint:'Гравитация. 600 — стандарт GMod/Source', type:'number', value:600 },
-      { cvar:'sv_airaccelerate', label:'Air accelerate', hint:'Ускорение в воздухе (10 — стандарт)', type:'number', value:10 },
-      { cvar:'sv_friction', label:'Friction', hint:'Трение по земле (4 — стандарт)', type:'number', value:4 },
-      { cvar:'sv_maxspeed', label:'Max speed', hint:'Макс. скорость игрока (320 — стандарт Source)', type:'number', value:320 },
-      { cvar:'sv_stepsize', label:'Step size', hint:'Высота шага (18 — стандарт)', type:'number', value:18 },
+      { cvar:'sv_gravity', label:'Gravity', hintKey:'cfg_h_gravity', type:'number', value:600 },
+      { cvar:'sv_airaccelerate', label:'Air accelerate', hintKey:'cfg_h_airaccelerate', type:'number', value:10 },
+      { cvar:'sv_friction', label:'Friction', hintKey:'cfg_h_friction', type:'number', value:4 },
+      { cvar:'sv_maxspeed', label:'Max speed', hintKey:'cfg_h_maxspeed', type:'number', value:320 },
+      { cvar:'sv_stepsize', label:'Step size', hintKey:'cfg_h_stepsize', type:'number', value:18 },
     ]
   },
   {
     key: 'log', titleKey: 'cfg_s_log', subKey: 'cfg_s_log_sub',
     fields: [
-      { cvar:'sv_voiceenable', label:'Voice chat', hint:'Включить голос. 1 = вкл.', type:'select', options:['0','1'], value:'1' },
-      { cvar:'sv_logbans', label:'Log bans', hint:'Логировать баны. 1 = вкл.', type:'select', options:['0','1'], value:'1' },
-      { cvar:'sv_logblocks', label:'Log blocked queries', hint:'Логировать блокированные запросы', type:'select', options:['0','1'], value:'1' },
-      { cvar:'sv_logecho', label:'Log echo to console', hint:'Дублировать логи в консоль сервера', type:'select', options:['0','1'], value:'1' },
-      { cvar:'sv_logfile', label:'Write log file', hint:'Писать логи в файл', type:'select', options:['0','1'], value:'1' },
-      { cvar:'sv_log_onefile', label:'One log file', hint:'Один файл на запуск сервера', type:'select', options:['0','1'], value:'0' },
+      { cvar:'sv_voiceenable', label:'Voice chat', hintKey:'cfg_h_voiceenable', type:'select', options:['0','1'], value:'1' },
+      { cvar:'sv_logbans', label:'Log bans', hintKey:'cfg_h_logbans', type:'select', options:['0','1'], value:'1' },
+      { cvar:'sv_logblocks', label:'Log blocked queries', hintKey:'cfg_h_logblocks', type:'select', options:['0','1'], value:'1' },
+      { cvar:'sv_logecho', label:'Log echo to console', hintKey:'cfg_h_logecho', type:'select', options:['0','1'], value:'1' },
+      { cvar:'sv_logfile', label:'Write log file', hintKey:'cfg_h_logfile', type:'select', options:['0','1'], value:'1' },
+      { cvar:'sv_log_onefile', label:'One log file', hintKey:'cfg_h_log_onefile', type:'select', options:['0','1'], value:'0' },
     ]
   },
   {
     key: 'ws', titleKey: 'cfg_s_ws', subKey: 'cfg_s_ws_sub',
     fields: [
-      { cvar:'sv_workshop_allow_other_users', label:'Allow user workshop', hint:'Разрешить аддоны от других пользователей', type:'select', options:['0','1'], value:'1' },
-      { cvar:'sv_downloadurl', label:'FastDL URL (опц.)', hint:'URL FastDL для быстрой загрузки моделей/материалов', type:'text', value:'', optional:true },
-      { cvar:'sv_allowdownload', label:'Allow downloads', hint:'Разрешить клиенту качать ресурсы с сервера', type:'select', options:['0','1'], value:'1' },
-      { cvar:'sv_allowupload', label:'Allow uploads', hint:'Разрешить клиентам отправлять спреи и т.п.', type:'select', options:['0','1'], value:'1' },
+      { cvar:'sv_workshop_allow_other_users', label:'Allow user workshop', hintKey:'cfg_h_workshop', type:'select', options:['0','1'], value:'1' },
+      { cvar:'sv_downloadurl', label:'FastDL URL (optional)', hintKey:'cfg_h_downloadurl', type:'text', value:'', optional:true },
+      { cvar:'sv_allowdownload', label:'Allow downloads', hintKey:'cfg_h_allowdownload', type:'select', options:['0','1'], value:'1' },
+      { cvar:'sv_allowupload', label:'Allow uploads', hintKey:'cfg_h_allowupload', type:'select', options:['0','1'], value:'1' },
     ]
   },
 ];
-
 function buildCfgForm(){
   els.cfgForm.innerHTML = CFG_SCHEMA.map((sec) => {
     const rows = sec.fields.map((f) => {
@@ -1049,7 +1187,7 @@ function buildCfgForm(){
       return '<div class="row">' +
         '<label for="'+id+'">'+f.label+' <span class="cvar">'+f.cvar+'</span></label>' +
         input +
-        '<div class="sub">'+f.hint+'</div>' +
+        '<div class="sub">'+t(f.hintKey)+'</div>' +
       '</div>';
     }).join('');
     return '<div class="form-section">' +
@@ -1122,6 +1260,7 @@ function copyCfg(){ if (cfgText) copyText(cfgText, els.cfgCopyBtn); }
 /* ================= DarkRP job generator ================= */
 const JOB_DEFAULTS = {
   const:'TEAM_EXAMPLE', disp:'Пример', cmd:'example',
+  category:'Citizens',
   desc:'Описание профессии для меню F4. Опишите обязанности, требования и что игрок получает.',
   color:'#FF7A29', salary:100, max:5, admin:0, vote:false,
   weapons:['weapon_physcannon','weapon_physgun','gmod_tool','weapon_pistol'],
@@ -1144,12 +1283,15 @@ function buildJobForm(){
       '<div class="two-col">' +
         row(t('job_const')+' <span class="cvar">TEAM_*</span>',
           '<input type="text" id="j_const" value="'+f.const+'">',
-          'Имя константы. Должно начинаться с TEAM_ и быть уникальным.') +
+          t('job_const_hint')) +
         row(t('job_disp'),
           '<input type="text" id="j_disp" value="'+f.disp+'">') +
         row(t('job_cmd')+' <span class="cvar">/job</span>',
           '<input type="text" id="j_cmd" value="'+f.cmd+'">',
-          'Команда в чате. Только латиница, без пробелов.') +
+          t('job_cmd_hint')) +
+        row(t('job_category'),
+          '<input type="text" id="j_category" value="'+f.category+'">',
+          t('job_category_hint')) +
       '</div>'
     ) +
     section('job_s_look','job_s_look_sub',
@@ -1163,12 +1305,12 @@ function buildJobForm(){
     ) +
     section('job_s_pay','job_s_pay_sub',
       '<div class="two-col">' +
-        row(t('job_salary'), '<input type="number" id="j_salary" value="'+f.salary+'">', 'Зарплата каждые 10 минут.') +
-        row(t('job_max'), '<input type="number" id="j_max" value="'+f.max+'">', '0 = без ограничения.') +
-        row(t('job_admin'), '<input type="number" id="j_admin" value="'+f.admin+'">', '0 = всем, 1 = VIP, 2 = модер, 3 = админ, 4 = суперадмин.') +
+        row(t('job_salary'), '<input type="number" id="j_salary" value="'+f.salary+'">', t('job_salary_hint')) +
+        row(t('job_max'), '<input type="number" id="j_max" value="'+f.max+'">', t('job_max_hint')) +
+        row(t('job_admin'), '<input type="number" id="j_admin" value="'+f.admin+'">', t('job_admin_hint')) +
         row(t('job_vote'),
           '<label class="chk"><input type="checkbox" id="j_vote" '+(f.vote?'checked':'')+'> '+t('job_vote')+'</label>',
-          'Игроки должны голосовать, чтобы взять профессию.') +
+          t('job_vote_hint')) +
       '</div>'
     ) +
     section('job_s_weap','job_s_weap_sub',
@@ -1178,12 +1320,12 @@ function buildJobForm(){
     ) +
     section('job_s_stats','job_s_stats_sub',
       '<div class="two-col">' +
-        row(t('job_hp'), '<input type="number" id="j_hp" value="'+f.hp+'">', 'Обычно 100, танки 150+, слабые 60-80.') +
-        row(t('job_armor'), '<input type="number" id="j_armor" value="'+f.armor+'">', '0 = без брони, 100 = полная броня.') +
-        row(t('job_walk'), '<input type="number" id="j_walk" value="'+f.walk+'">', 'Стандарт 200. Полицейские 220.') +
-        row(t('job_run'), '<input type="number" id="j_run" value="'+f.run+'">', 'Стандарт 300. Спецназ 400+.') +
-        row(t('job_jump'), '<input type="number" id="j_jump" value="'+f.jump+'">', 'Стандарт 200. Акробаты 300+.') +
-        row(t('job_scale'), '<input type="number" step="0.1" min="0.2" max="3" id="j_scale" value="'+f.scale+'">', '1 = обычный. 0.8 = карлик, 1.3 = гигант.') +
+        row(t('job_hp'), '<input type="number" id="j_hp" value="'+f.hp+'">', t('job_hp_hint')) +
+        row(t('job_armor'), '<input type="number" id="j_armor" value="'+f.armor+'">', t('job_armor_hint')) +
+        row(t('job_walk'), '<input type="number" id="j_walk" value="'+f.walk+'">', t('job_walk_hint')) +
+        row(t('job_run'), '<input type="number" id="j_run" value="'+f.run+'">', t('job_run_hint')) +
+        row(t('job_jump'), '<input type="number" id="j_jump" value="'+f.jump+'">', t('job_jump_hint')) +
+        row(t('job_scale'), '<input type="number" step="0.1" min="0.2" max="3" id="j_scale" value="'+f.scale+'">', t('job_scale_hint')) +
         row(t('job_nofall'),
           '<label class="chk"><input type="checkbox" id="j_nofall" '+(f.nofall?'checked':'')+'> '+t('job_nofall')+'</label>') +
       '</div>'
@@ -1191,7 +1333,7 @@ function buildJobForm(){
     section('job_s_extra','job_s_extra_sub',
       row(t('job_custom'),
         '<textarea id="j_custom" placeholder="'+t('job_custom_ph')+'">'+f.custom+'</textarea>',
-        'Любой Lua, выполняемый при спавне. Доступна переменная ply. Примеры: ply:GodEnable(), ply:StripWeapons().') +
+        t('job_custom_hint')) +
       row(t('job_chk'),
         '<label class="chk"><input type="checkbox" id="j_chk" '+(f.customChk?'checked':'')+'> '+t('job_chk_enable')+'</label>' +
         '<textarea id="j_chk_code" placeholder="'+t('job_chk_ph')+'" '+(f.customChk?'':'style="display:none;"')+'>'+f.customChkCode+'</textarea>')
@@ -1210,6 +1352,7 @@ function buildJobForm(){
   bind('j_const','const');
   bind('j_disp','disp');
   bind('j_cmd','cmd');
+  bind('j_category','category');
   bind('j_desc','desc');
   bind('j_color','color');
   bind('j_salary','salary', (v) => parseInt(v)||0);
@@ -1278,6 +1421,7 @@ function buildJobLua(job){
   const b = parseInt(j.color.slice(5,7),16);
   const tbl = [];
   tbl.push('    color = Color(' + r + ', ' + g + ', ' + b + ', 255),');
+  tbl.push('    category = "' + j.category.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '",');
   tbl.push('    model = {' + j.models.map((m) => '"' + m.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"').join(', ') + '},');
   tbl.push('    description = [[' + j.desc.replace(/\]\]/g, '] ]') + ']],');
   tbl.push('    weapons = {' + j.weapons.map((w) => '"' + w + '"').join(', ') + '},');
@@ -1315,7 +1459,7 @@ function buildJobLua(job){
     tbl.push('    customCheck = function(ply)');
     j.customChkCode.split(/\r?\n/).forEach((ln) => tbl.push('        ' + ln));
     tbl.push('    end,');
-    tbl.push('    CustomCheckFailMsg = "У тебя нет прав на эту профессию.",');
+    tbl.push('    CustomCheckFailMsg = "' + (lang === 'ru' ? 'У тебя нет прав на эту профессию.' : 'You do not have access to this job.') + '",');
   }
   return j.const + ' = DarkRP.createJob(' + luaStr(j.disp) + ', {\n' + tbl.join('\n') + '\n})';
 }
@@ -1355,28 +1499,29 @@ function renderJobs(){
 function addJob(){
   // валидация
   if (!/^TEAM_[A-Z0-9_]+$/.test(jobDraft.const)){
-    alert('Константа должна начинаться с TEAM_ и содержать только заглавные буквы, цифры и _');
+    alert(t('val_const'));
     return;
   }
   if (!/^[a-z0-9_]+$/.test(jobDraft.cmd)){
-    alert('Команда должна содержать только маленькие латинские буквы, цифры и _');
+    alert(t('val_cmd'));
     return;
   }
   if (jobs.some((j) => j.const === jobDraft.const)){
-    alert('Константа ' + jobDraft.const + ' уже используется. Придумай другую.');
+    alert(t('val_const_dup') + ' ' + jobDraft.const);
     return;
   }
   if (jobs.some((j) => j.cmd === jobDraft.cmd)){
-    alert('Команда /' + jobDraft.cmd + ' уже используется.');
+    alert(t('val_cmd_dup') + ' /' + jobDraft.cmd);
     return;
   }
   if (jobDraft.models.length === 0){
-    alert('Добавь хотя бы одну модель.');
+    alert(t('val_model'));
     return;
   }
   jobs.push(JSON.parse(JSON.stringify(jobDraft)));
   renderJobs();
 }
+
 
 function updateJob(){
   const head =
