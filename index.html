@@ -773,6 +773,7 @@ function parseJsonLoose(text){
 
 /* ---------- страница коллекции: GET ---------- */
 const PAGE_PROXIES = [
+  { name: 'my-proxy', build: (u) => MY_PROXY + '/proxy?url=' + encodeURIComponent(u) },
   { name: 'corsproxy',  build: (u) => 'https://corsproxy.io/?url=' + encodeURIComponent(u) },
   { name: 'allorigins', build: (u) => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
   { name: 'codetabs',   build: (u) => 'https://api.codetabs.com/v1/proxy/?quest=' + encodeURIComponent(u) },
