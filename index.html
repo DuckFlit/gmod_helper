@@ -207,6 +207,51 @@
   ::selection{background:rgba(255,122,41,.3);}
   @media (prefers-reduced-motion: reduce){ .progress-fill{animation:none;} }
   [hidden]{display:none !important;}
+  /* ---------- load estimator ---------- */
+.load-overview{display:grid;grid-template-columns:260px 1fr;gap:24px;align-items:stretch;margin-bottom:22px;}
+@media (max-width:900px){ .load-overview{grid-template-columns:1fr;} }
+.load-gauge{background:var(--panel-2);border:1px solid var(--border-soft);border-radius:14px;padding:20px;display:flex;align-items:center;justify-content:center;position:relative;}
+.gauge-svg{width:100%;max-width:220px;transform:rotate(-90deg);}
+.gauge-bg{fill:none;stroke:var(--bg);stroke-width:14;}
+.gauge-fill{fill:none;stroke:var(--green);stroke-width:14;stroke-linecap:round;stroke-dasharray:534;stroke-dashoffset:534;transition:stroke-dashoffset 1.2s cubic-bezier(.3,.7,.3,1), stroke .4s;}
+.gauge-text{position:absolute;text-align:center;}
+.gauge-value{font-family:var(--disp);font-size:54px;font-weight:700;line-height:1;color:var(--text);}
+.gauge-label{font-family:var(--disp);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-faint);margin-top:6px;}
+.gauge-sev{font-family:var(--disp);font-size:14px;font-weight:700;letter-spacing:.5px;margin-top:10px;padding:3px 10px;border-radius:20px;display:inline-block;}
+.gauge-sev.light{color:#9af0c6;background:rgba(57,217,138,.1);border:1px solid rgba(57,217,138,.35);}
+.gauge-sev.medium{color:#ffcf7a;background:rgba(255,207,122,.08);border:1px solid rgba(255,207,122,.35);}
+.gauge-sev.heavy{color:#ff9a5c;background:rgba(255,122,41,.08);border:1px solid rgba(255,122,41,.35);}
+.gauge-sev.critical{color:#ffb4bb;background:rgba(255,79,94,.1);border:1px solid rgba(255,79,94,.35);}
+
+.load-bars{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+@media (max-width:700px){ .load-bars{grid-template-columns:1fr;} }
+.load-bar-item{background:var(--panel-2);border:1px solid var(--border-soft);border-radius:12px;padding:14px 16px;}
+.load-bar-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.load-bar-label{font-family:var(--disp);font-size:13px;font-weight:600;color:var(--text);letter-spacing:.3px;}
+.load-bar-val{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--orange);}
+.load-bar-track{height:8px;background:var(--bg-soft);border-radius:4px;overflow:hidden;border:1px solid var(--border-soft);}
+.load-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--yellow));width:0%;transition:width .8s ease, background .4s;}
+.load-bar-fill.medium{background:linear-gradient(90deg,var(--yellow),var(--orange));}
+.load-bar-fill.heavy{background:linear-gradient(90deg,var(--orange),var(--red));}
+.load-bar-hint{font-size:11px;color:var(--text-faint);margin-top:6px;line-height:1.4;}
+
+.load-reco{background:var(--panel-2);border:1px solid var(--border-soft);border-radius:14px;padding:18px 20px;margin-bottom:22px;}
+.load-reco h3{font-family:var(--disp);font-size:16px;font-weight:700;color:var(--text);margin:0 0 12px;letter-spacing:.3px;display:flex;align-items:center;gap:8px;}
+.load-reco-list{display:flex;flex-direction:column;gap:8px;}
+.load-reco-item{display:flex;gap:10px;padding:10px 12px;background:var(--bg-soft);border-radius:8px;font-size:12.5px;line-height:1.55;color:var(--text-dim);border:1px solid var(--border-soft);}
+.load-reco-item .reco-ico{flex:none;font-size:16px;line-height:1.4;}
+.load-reco-item b{color:var(--text);font-weight:600;}
+.load-reco-item.tip{border-left:3px solid var(--green);}
+.load-reco-item.warn{border-left:3px solid var(--yellow);}
+.load-reco-item.crit{border-left:3px solid var(--red);}
+
+.load-top-section{background:var(--panel-2);border:1px solid var(--border-soft);border-radius:14px;padding:16px 18px;}
+.load-top-section .table-wrap{background:var(--bg-soft);border:1px solid var(--border-soft);}
+td.load-type{font-family:var(--mono);font-size:11px;color:var(--text-faint);}
+td.load-impact{font-family:var(--mono);font-size:11.5px;font-weight:600;}
+td.load-impact.high{color:#ffb4bb;}
+td.load-impact.med{color:#ffcf7a;}
+td.load-impact.low{color:#9af0c6;}
 </style>
 </head>
 <body>
@@ -220,6 +265,7 @@
     <option value="cfg" data-i18n="tool_cfg">server.cfg</option>
     <option value="job" data-i18n="tool_job">DarkRP job</option>
     <option value="conflicts" data-i18n="tool_conflicts">Проверка конфликтов</option>
+    <option value="load" data-i18n="tool_load">Оценка нагрузки</option>
   </select>
 </div>
 
@@ -239,7 +285,7 @@
         <div class="nav-item" data-view="cfg"><span class="dot"></span> <span data-i18n="tool_cfg">server.cfg генератор</span></div>
         <div class="nav-item" data-view="job"><span class="dot"></span> <span data-i18n="tool_job">DarkRP job генератор</span></div>
         <div class="nav-item" data-view="conflicts"><span class="dot"></span> <span data-i18n="tool_conflicts">Проверка конфликтов</span></div>
-     <div class="nav-item soon"><span class="dot"></span> <span data-i18n="tool_load">Оценка нагрузки</span> <span class="soon-tag" data-i18n="soon">скоро</span></div>
+        <div class="nav-item" data-view="load"><span class="dot"></span> <span data-i18n="tool_load">Оценка нагрузки</span></div>
     </div>
     </div>
 
@@ -470,6 +516,110 @@
     <p class="note" data-i18n="conf_note" style="margin-top:20px;">Инструмент ищет только типовые и статические конфликты. Реальные коллизии файлов (одинаковые пути к моделям/звукам) можно проверить только распаковав .gma локально — для этого используй GMAD на сервере.</p>
   </div>
 </section>
+<!-- ============ VIEW 6: LOAD ESTIMATOR ============ -->
+<section id="view-load" hidden>
+  <div class="page-head">
+    <div class="eyebrow" data-i18n="eyebrow_load">Инструмент 06 — Load Estimator</div>
+    <h1 data-i18n="h1_load">Потянет ли сервер твою коллекцию?</h1>
+    <p class="lede" data-i18n="lede_load">Оцениваю нагрузку на CPU, RAM, диск и сеть на основе типов содержимого и размеров аддонов. Получишь конкретные цифры под твою коллекцию и рекомендации по оптимизации.</p>
+  </div>
+
+  <div class="panel">
+    <div class="input-row">
+      <div class="input-wrap">
+        <input id="loadInput" type="text" data-i18n-ph="ph_input" placeholder="https://steamcommunity.com/sharedfiles/filedetails/?id=...  или  просто ID" />
+      </div>
+      <button class="btn" id="loadBtn" data-i18n="btn_load">▶ Оценить</button>
+      <button class="btn ghost" id="loadUseLastBtn" data-i18n="btn_use_last">использовать последний результат</button>
+    </div>
+
+    <div class="hint" data-i18n="hint_load">Оценка основана на статистических моделях. Реальная нагрузка зависит от карты, количества игроков и поведения аддонов.</div>
+
+    <div class="status-box" id="loadStatusBox">
+      <div class="status-line"><span id="loadStatusText">…</span><b id="loadStatusCount"></b></div>
+      <div class="progress-track"><div class="progress-fill" id="loadProgressFill"></div></div>
+    </div>
+    <div class="error-box" id="loadErrorBox"></div>
+    <details class="debug"><summary data-i18n="dbg">Журнал отладки</summary><pre class="debuglog"></pre></details>
+  </div>
+
+  <div id="loadResults" style="display:none;margin-top:24px;">
+    <div class="load-overview">
+      <div class="load-gauge">
+        <svg viewBox="0 0 200 200" class="gauge-svg">
+          <circle cx="100" cy="100" r="85" class="gauge-bg"></circle>
+          <circle cx="100" cy="100" r="85" class="gauge-fill" id="loadGaugeFill"></circle>
+        </svg>
+        <div class="gauge-text">
+          <div class="gauge-value" id="loadGaugeValue">0</div>
+          <div class="gauge-label" data-i18n="load_score">Общая оценка</div>
+          <div class="gauge-sev" id="loadGaugeSev">—</div>
+        </div>
+      </div>
+      <div class="load-bars">
+        <div class="load-bar-item">
+          <div class="load-bar-head">
+            <span class="load-bar-label">🧠 <span data-i18n="load_cpu">CPU</span></span>
+            <span class="load-bar-val" id="loadCpuVal">0%</span>
+          </div>
+          <div class="load-bar-track"><div class="load-bar-fill" id="loadCpuBar"></div></div>
+          <div class="load-bar-hint" id="loadCpuHint"></div>
+        </div>
+        <div class="load-bar-item">
+          <div class="load-bar-head">
+            <span class="load-bar-label">💾 <span data-i18n="load_ram">RAM</span></span>
+            <span class="load-bar-val" id="loadRamVal">0 ГБ</span>
+          </div>
+          <div class="load-bar-track"><div class="load-bar-fill" id="loadRamBar"></div></div>
+          <div class="load-bar-hint" id="loadRamHint"></div>
+        </div>
+        <div class="load-bar-item">
+          <div class="load-bar-head">
+            <span class="load-bar-label">💿 <span data-i18n="load_disk">Диск</span></span>
+            <span class="load-bar-val" id="loadDiskVal">0 ГБ</span>
+          </div>
+          <div class="load-bar-track"><div class="load-bar-fill" id="loadDiskBar"></div></div>
+          <div class="load-bar-hint" id="loadDiskHint"></div>
+        </div>
+        <div class="load-bar-item">
+          <div class="load-bar-head">
+            <span class="load-bar-label">🌐 <span data-i18n="load_net">Сеть</span></span>
+            <span class="load-bar-val" id="loadNetVal">0 МБ</span>
+          </div>
+          <div class="load-bar-track"><div class="load-bar-fill" id="loadNetBar"></div></div>
+          <div class="load-bar-hint" id="loadNetHint"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="load-reco" id="loadReco"></div>
+
+    <div class="load-top-section">
+      <div class="table-toolbar">
+        <div class="left"><b data-i18n="load_top_title">ТОП‑10 самых тяжёлых аддонов</b></div>
+        <div class="toolbar-actions">
+          <button class="btn ghost" id="loadCopyReport" data-i18n="btn_copy">Копировать отчёт</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:34px;">#</th>
+              <th data-i18n="th_addon">Аддон</th>
+              <th data-i18n="th_size">Размер</th>
+              <th data-i18n="load_th_type">Тип нагрузки</th>
+              <th data-i18n="load_th_impact">Вклад</th>
+            </tr>
+          </thead>
+          <tbody id="loadTopBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="note" data-i18n="load_note" style="margin-top:20px;">Оценка сделана эвристически на основе названий, размеров и типов аддонов. Реальные метрики снимайте на работающем сервере через <code>status</code> и <code>mem_snapshot</code> в консоли.</p>
+  </div>
+</section>
   </main>
 </div>
 
@@ -652,6 +802,34 @@ const L = {
     conf_similar_desc:'Два аддона с почти одинаковыми названиями — вероятно, один является копией/форком другого. Оставь только один.',
     conf_tag_base:'Конфликт по тегу',
     conf_tag_base_desc:'Несколько аддонов помечены как "base"/"framework" — они могут переопределять функции друг друга.',
+        // Load estimator
+    eyebrow_load:'Инструмент 06 — Load Estimator', h1_load:'Потянет ли сервер твою коллекцию?',
+    lede_load:'Оцениваю нагрузку на CPU, RAM, диск и сеть на основе типов содержимого и размеров аддонов. Получишь конкретные цифры под твою коллекцию и рекомендации по оптимизации.',
+    btn_load:'▶ Оценить', hint_load:'Оценка основана на статистических моделях. Реальная нагрузка зависит от карты, количества игроков и поведения аддонов.',
+    load_score:'Общая оценка',
+    load_cpu:'CPU', load_ram:'RAM', load_disk:'Диск', load_net:'Сеть',
+    load_top_title:'ТОП‑10 самых тяжёлых аддонов',
+    load_th_type:'Тип нагрузки', load_th_impact:'Вклад',
+    load_note:'Оценка сделана эвристически на основе названий, размеров и типов аддонов. Реальные метрики снимайте на работающем сервере через status и mem_snapshot в консоли.',
+    sev_light:'Лёгкая', sev_medium:'Средняя', sev_heavy:'Тяжёлая', sev_critical:'Критическая',
+    load_no_last:'Сначала отсканируй коллекцию в Collection Helper.',
+    load_cpu_hint:'При 20+ игроках и активной физике — нагрузка на процессор. Для тяжёлой коллекции нужно 4+ ядра с высокой тактовой частотой (3.5 GHz+).',
+    load_cpu_low:'Подойдёт любой двухъядерный процессор.',
+    load_ram_hint:'GMod жрёт RAM. На каждый 1 ГБ коллекции в среднем уходит 300‑500 МБ оперативки сервера. Плюс базовые ~2 ГБ.',
+    load_disk_hint:'Размер коллекции + кеш + распакованные файлы. Для больших коллекций — строго SSD.',
+    load_net_hint:'Объём, который каждый игрок должен скачать при первом входе (через workshop). С FastDL — быстрее.',
+    load_reco_title:'💡 Рекомендации',
+    load_reco_none:'Коллекция оптимизирована, серьёзных проблем не найдено.',
+    load_reco_cpu:'Рассмотрите уменьшение количества физических аддонов (машины, NPC, пропы).',
+    load_reco_ram:'Добавьте больше RAM на сервер или уберите крупные карты/текстурпаки.',
+    load_reco_disk:'Используйте NVMe SSD, иначе игроки будут ждать подгрузки моделей.',
+    load_reco_net:'Настройте FastDL, чтобы разгрузить канал сервера.',
+    load_reco_big:'Самые тяжёлые аддоны стоит проверить: возможно, есть более лёгкие аналоги.',
+    load_reco_count:'Очень много аддонов — замедление старта сервера и F4‑меню.',
+    load_type_map:'Карта', load_type_texture:'Текстуры', load_type_model:'Модели',
+    load_type_weapon:'Оружие', load_type_vehicle:'Транспорт', load_type_npc:'NPC/AI',
+    load_type_player:'Игрок‑модели', load_type_sound:'Звуки', load_type_tool:'Инструменты',
+    load_type_script:'Скрипты', load_type_other:'Другое',
   },
 
   en: {
@@ -825,6 +1003,34 @@ const L = {
     conf_similar_desc:'Two addons with almost identical names — one is likely a copy/fork of the other. Keep only one.',
     conf_tag_base:'Tag conflict',
     conf_tag_base_desc:'Several addons tagged as "base"/"framework" — they may override each other\'s functions.',
+        // Load estimator
+    eyebrow_load:'Tool 06 — Load Estimator', h1_load:'Can your server handle the collection?',
+    lede_load:'Estimates CPU, RAM, disk and network load based on content types and addon sizes. Get concrete numbers for your collection and optimization recommendations.',
+    btn_load:'▶ Estimate', hint_load:'The estimation is based on statistical models. Real load depends on the map, player count and addon behavior.',
+    load_score:'Overall score',
+    load_cpu:'CPU', load_ram:'RAM', load_disk:'Disk', load_net:'Network',
+    load_top_title:'TOP‑10 heaviest addons',
+    load_th_type:'Load type', load_th_impact:'Impact',
+    load_note:'Estimation is heuristic, based on names, sizes and addon types. Get real metrics from a running server via status and mem_snapshot in console.',
+    sev_light:'Light', sev_medium:'Medium', sev_heavy:'Heavy', sev_critical:'Critical',
+    load_no_last:'Scan a collection in Collection Helper first.',
+    load_cpu_hint:'With 20+ players and active physics — heavy on the CPU. For heavy collections you need 4+ cores at high clock (3.5 GHz+).',
+    load_cpu_low:'Any dual-core CPU is enough.',
+    load_ram_hint:'GMod eats RAM. Roughly 300-500 MB per 1 GB of collection on average. Plus ~2 GB base.',
+    load_disk_hint:'Collection size + cache + extracted files. For large collections — SSD only.',
+    load_net_hint:'Amount each player must download on first join (via workshop). Faster with FastDL.',
+    load_reco_title:'💡 Recommendations',
+    load_reco_none:'Collection is well optimized, no serious issues found.',
+    load_reco_cpu:'Consider reducing physics-heavy addons (cars, NPCs, props).',
+    load_reco_ram:'Add more server RAM or remove large maps/texture packs.',
+    load_reco_disk:'Use NVMe SSD, otherwise players will wait for models to load.',
+    load_reco_net:'Set up FastDL to offload the server channel.',
+    load_reco_big:'Check the heaviest addons: lighter alternatives may exist.',
+    load_reco_count:'Too many addons — slows server start and F4 menu.',
+    load_type_map:'Map', load_type_texture:'Textures', load_type_model:'Models',
+    load_type_weapon:'Weapon', load_type_vehicle:'Vehicle', load_type_npc:'NPC/AI',
+    load_type_player:'Player models', load_type_sound:'Sounds', load_type_tool:'Tools',
+    load_type_script:'Scripts', load_type_other:'Other',
   }
 };
 let lang = localStorage.getItem('gsh_lang') || 'ru';
@@ -865,6 +1071,15 @@ const els = {
   confStatChecked: $('confStatChecked'), confStatCrit: $('confStatCrit'), confStatWarn: $('confStatWarn'), confStatInfo: $('confStatInfo'),
   confIssueCount: $('confIssueCount'), confIssues: $('confIssues'),
   confFilterAll: $('confFilterAll'), confFilterCrit: $('confFilterCrit'), confCopyReport: $('confCopyReport'),
+  loadInput: $('loadInput'), loadBtn: $('loadBtn'), loadUseLastBtn: $('loadUseLastBtn'),
+  loadStatusBox: $('loadStatusBox'), loadStatusText: $('loadStatusText'), loadStatusCount: $('loadStatusCount'), loadProgressFill: $('loadProgressFill'),
+  loadErrorBox: $('loadErrorBox'), loadResults: $('loadResults'),
+  loadGaugeFill: $('loadGaugeFill'), loadGaugeValue: $('loadGaugeValue'), loadGaugeSev: $('loadGaugeSev'),
+  loadCpuVal: $('loadCpuVal'), loadCpuBar: $('loadCpuBar'), loadCpuHint: $('loadCpuHint'),
+  loadRamVal: $('loadRamVal'), loadRamBar: $('loadRamBar'), loadRamHint: $('loadRamHint'),
+  loadDiskVal: $('loadDiskVal'), loadDiskBar: $('loadDiskBar'), loadDiskHint: $('loadDiskHint'),
+  loadNetVal: $('loadNetVal'), loadNetBar: $('loadNetBar'), loadNetHint: $('loadNetHint'),
+  loadReco: $('loadReco'), loadTopBody: $('loadTopBody'), loadCopyReport: $('loadCopyReport'),
 };
 
 let currentItems = [];
@@ -876,6 +1091,7 @@ let jobText = '';
 let jobs = []; // массив собранных DarkRP джобов
 let conflictIssues = [];
 let conflictFilter = 'all';
+let lastLoadReport = null;
 
 function log(msg){
   const line = '[' + new Date().toLocaleTimeString() + '] ' + msg;
@@ -2028,11 +2244,213 @@ function buildConflictReport(){
   });
   return lines.join('\n');
 }
-  
+
+/* ================= Load estimator ================= */
+const uiLoad = () => ({ box: els.loadStatusBox, text: els.loadStatusText, count: els.loadStatusCount, fill: els.loadProgressFill });
+
+// Классификация аддонов по названиям
+const LOAD_PATTERNS = [
+  { key:'map',      rx:/\bmap\b|\bmaps\b|\brp_\b|\bttt_\b|\bcs_\b|\bde_\b|\bgm_\b/i,           cpu:0.3, ram:0.5, disk:1.0, net:1.0 },
+  { key:'texture',  rx:/\btexture\b|\bmaterial\b|\b4k\b|\bhd\b|\brealistic\s*texture/i,       cpu:0.1, ram:0.7, disk:0.8, net:0.8 },
+  { key:'vehicle',  rx:/\bcar\b|\bvehicle\b|\bplane\b|\bhelicopter\b|\bboat\b|\bsimfphys/i,   cpu:0.8, ram:0.3, disk:0.4, net:0.4 },
+  { key:'npc',      rx:/\bnpc\b|\bai\b|\bzombie\b|\bcombine\b|\bmetrocop\b|\bantlion/i,       cpu:0.7, ram:0.2, disk:0.2, net:0.2 },
+  { key:'weapon',   rx:/\bweapon\b|\bgun\b|\brifle\b|\bpistol\b|\bm9k\b|\btfa\b|\barccw/i,    cpu:0.4, ram:0.2, disk:0.3, net:0.3 },
+  { key:'player',   rx:/\bplayer\s*model\b|\bpm\b|\bmodel\s*pack\b|\bskin\b/i,                cpu:0.1, ram:0.2, disk:0.5, net:0.5 },
+  { key:'sound',    rx:/\bsound\b|\bvoice\b|\bmusic\b|\bradio\b|\bsfx\b/i,                    cpu:0.05,ram:0.3, disk:0.3, net:0.3 },
+  { key:'tool',     rx:/\btool\b|\bwiremod\b|\bduplicator\b|\bprecision\b/i,                  cpu:0.2, ram:0.1, disk:0.1, net:0.1 },
+  { key:'script',   rx:/\badmin\b|\bframework\b|\bdarkrp\b|\bmodule\b|\bscript\b|\blua\b/i,   cpu:0.3, ram:0.3, disk:0.1, net:0.1 },
+  { key:'model',    rx:/\bmodel\b|\bprop\b|\bcharacter\b|\bmap\s*prop/i,                      cpu:0.2, ram:0.3, disk:0.5, net:0.5 },
+];
+
+function classifyAddon(title){
+  const t = (title || '').toLowerCase();
+  let best = { key:'other', cpu:0.1, ram:0.15, disk:0.3, net:0.3 };
+  let bestScore = 0;
+  LOAD_PATTERNS.forEach((p) => {
+    const matches = (t.match(p.rx) || []).length;
+    if (matches > bestScore){ bestScore = matches; best = p; }
+  });
+  return best;
+}
+
+function estimateLoad(items){
+  const classified = items.map((it) => {
+    const cls = classifyAddon(it.title);
+    const size = it.size || 0;
+    const sizeGB = size / (1024*1024*1024);
+    return {
+      ...it,
+      cls,
+      cpu: cls.cpu * sizeGB * 10 + cls.cpu * 0.5,
+      ram: cls.ram * sizeGB * 0.4 + cls.ram * 0.3,
+      disk: cls.disk * sizeGB,
+      net: cls.net * sizeGB,
+    };
+  });
+
+  const totalSize = classified.reduce((s,i) => s + (i.size||0), 0);
+  const totalSizeGB = totalSize / (1024*1024*1024);
+
+  // Агрегируем
+  const cpuScore = Math.min(100, classified.reduce((s,i) => s + i.cpu, 0));
+  const ramGB = 2 + classified.reduce((s,i) => s + i.ram, 0); // 2GB базово
+  const diskGB = totalSizeGB * 1.5; // с учётом кеша и распаковки
+  const netMB = totalSizeGB * 1024;
+
+  // Нормализуем в проценты нагрузки
+  const ramPct = Math.min(100, (ramGB / 16) * 100); // 16GB = потолок
+  const diskPct = Math.min(100, (diskGB / 200) * 100); // 200GB = потолок
+  const netPct = Math.min(100, (netMB / 50000) * 100); // 50GB = потолок
+
+  const overall = Math.round(
+    cpuScore * 0.3 +
+    ramPct * 0.3 +
+    diskPct * 0.2 +
+    netPct * 0.2
+  );
+
+  return { classified, totalSizeGB, cpuScore, ramGB, diskGB, netMB, ramPct, diskPct, netPct, overall };
+}
+
+function sevClass(score){
+  if (score <= 30) return 'light';
+  if (score <= 60) return 'medium';
+  if (score <= 80) return 'heavy';
+  return 'critical';
+}
+function sevName(cls){
+  return cls === 'light' ? t('sev_light')
+       : cls === 'medium' ? t('sev_medium')
+       : cls === 'heavy' ? t('sev_heavy')
+       : t('sev_critical');
+}
+
+function renderLoad(est){
+  const sev = sevClass(est.overall);
+  // gauge
+  const circumference = 2 * Math.PI * 85; // ~534
+  const offset = circumference - (est.overall / 100) * circumference;
+  els.loadGaugeFill.style.strokeDasharray = circumference;
+  els.loadGaugeFill.style.strokeDashoffset = offset;
+  const colors = { light:'#39D98A', medium:'#F5C518', heavy:'#FF7A29', critical:'#FF4F5E' };
+  els.loadGaugeFill.style.stroke = colors[sev];
+  els.loadGaugeValue.textContent = est.overall;
+  els.loadGaugeSev.className = 'gauge-sev ' + sev;
+  els.loadGaugeSev.textContent = sevName(sev);
+
+  // bars
+  const setBar = (bar, val, hint, pct, sevHint) => {
+    bar.style.width = Math.min(100, pct) + '%';
+    bar.className = 'load-bar-fill ' + (pct > 80 ? 'heavy' : pct > 50 ? 'medium' : '');
+    val.textContent = val.textContent; // обновим отдельно
+    hint.textContent = sevHint;
+  };
+  els.loadCpuVal.textContent = Math.round(est.cpuScore) + '%';
+  setBar(els.loadCpuBar, els.loadCpuVal, els.loadCpuHint, est.cpuScore, est.cpuScore < 30 ? t('load_cpu_low') : t('load_cpu_hint'));
+  els.loadRamVal.textContent = est.ramGB.toFixed(1) + ' ГБ';
+  setBar(els.loadRamBar, els.loadRamVal, els.loadRamHint, est.ramPct, t('load_ram_hint'));
+  els.loadDiskVal.textContent = est.diskGB.toFixed(1) + ' ГБ';
+  setBar(els.loadDiskBar, els.loadDiskVal, els.loadDiskHint, est.diskPct, t('load_disk_hint'));
+  els.loadNetVal.textContent = est.netMB > 1024 ? (est.netMB/1024).toFixed(1) + ' ГБ' : Math.round(est.netMB) + ' МБ';
+  setBar(els.loadNetBar, els.loadNetVal, els.loadNetHint, est.netPct, t('load_net_hint'));
+
+  // рекомендации
+  const reco = [];
+  if (est.cpuScore > 60) reco.push({ type:'warn', txt: t('load_reco_cpu') });
+  if (est.ramGB > 8) reco.push({ type:'warn', txt: t('load_reco_ram') });
+  if (est.diskGB > 50) reco.push({ type:'warn', txt: t('load_reco_disk') });
+  if (est.netMB > 10000) reco.push({ type:'warn', txt: t('load_reco_net') });
+  if (est.classified.length > 300) reco.push({ type:'crit', txt: t('load_reco_count') });
+  const bigOnes = est.classified.filter((i) => (i.size||0) > 500*1024*1024);
+  if (bigOnes.length >= 3) reco.push({ type:'tip', txt: t('load_reco_big') });
+  if (reco.length === 0) reco.push({ type:'tip', txt: t('load_reco_none') });
+
+  els.loadReco.innerHTML =
+    '<h3>' + t('load_reco_title') + '</h3>' +
+    '<div class="load-reco-list">' +
+      reco.map((r) => '<div class="load-reco-item ' + r.type + '"><span class="reco-ico">' + (r.type === 'crit' ? '⚠' : r.type === 'warn' ? '⚡' : '✓') + '</span><span>' + r.txt + '</span></div>').join('') +
+    '</div>';
+
+  // ТОП-10
+  const top = est.classified.slice().sort((a,b) => (b.size||0) - (a.size||0)).slice(0, 10);
+  els.loadTopBody.innerHTML = top.map((it, idx) => {
+    const pct = Math.round(((it.size||0) / (est.totalSizeGB * 1024*1024*1024 || 1)) * 100);
+    const impactCls = pct > 15 ? 'high' : pct > 5 ? 'med' : 'low';
+    return '<tr>' +
+      '<td class="rank">' + (idx+1) + '</td>' +
+      '<td class="name"><a href="https://steamcommunity.com/sharedfiles/filedetails/?id=' + it.id + '" target="_blank" rel="noopener">' + escapeHtml(it.title) + '</a></td>' +
+      '<td class="size">' + bytesToSize(it.size) + '</td>' +
+      '<td class="load-type">' + t('load_type_' + it.cls.key) + '</td>' +
+      '<td class="load-impact ' + impactCls + '">' + pct + '%</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function buildLoadReport(est){
+  const lines = [];
+  lines.push('# GMod Server Helper — Load Report');
+  lines.push('# Generated: ' + new Date().toISOString().slice(0,19).replace('T',' '));
+  lines.push('# Overall score: ' + est.overall + '/100 (' + sevName(sevClass(est.overall)) + ')');
+  lines.push('');
+  lines.push('## Metrics');
+  lines.push('- CPU load: ' + Math.round(est.cpuScore) + '%');
+  lines.push('- RAM needed: ' + est.ramGB.toFixed(1) + ' GB');
+  lines.push('- Disk space: ' + est.diskGB.toFixed(1) + ' GB');
+  lines.push('- Network (per player): ' + (est.netMB/1024).toFixed(2) + ' GB');
+  lines.push('');
+  lines.push('## TOP-10 heaviest addons');
+  est.classified.slice().sort((a,b) => (b.size||0) - (a.size||0)).slice(0, 10).forEach((it, i) => {
+    lines.push((i+1) + '. ' + it.title + ' — ' + bytesToSize(it.size) + ' (' + t('load_type_' + it.cls.key) + ')');
+  });
+  return lines.join('\n');
+}
+
+async function runLoadEstimate(useLast){
+  log('=== runLoadEstimate, useLast=' + useLast);
+  hideError(els.loadErrorBox);
+  els.loadResults.style.display = 'none';
+  els.loadBtn.disabled = true;
+  els.loadBtn.textContent = t('scanning');
+
+  try{
+    let items = [];
+    if (useLast && currentItems.length){
+      items = currentItems;
+      log('использую последний результат (' + items.length + ')');
+    } else {
+      const id = extractId(els.loadInput.value);
+      if (!id){ showError(els.loadErrorBox, t('err_id')); return; }
+      setStatus(uiLoad(), t('status_page'));
+      items = await fetchCollectionItems(id);
+      setStatus(uiLoad(), t('status_sizes'), 0, items.length);
+      const sizeMap = await fetchSizes(items.map((i) => i.id), (done, total) => {
+        setStatus(uiLoad(), t('status_sizes'), done, total);
+      });
+      items = mergeData(items, sizeMap);
+    }
+
+    const est = estimateLoad(items);
+    lastLoadReport = est;
+    renderLoad(est);
+    els.loadStatusBox.classList.remove('show');
+    els.loadResults.style.display = 'block';
+    log('оценка завершена, score=' + est.overall);
+  }catch(err){
+    log('ОШИБКА: ' + (err && err.message ? err.message : err));
+    els.loadStatusBox.classList.remove('show');
+    if (err.message === 'not_found') showError(els.loadErrorBox, t('err_notfound'));
+    else if (err.message === 'empty_collection') showError(els.loadErrorBox, t('err_empty'));
+    else if (err.message === 'sizes_unavailable') showError(els.loadErrorBox, t('err_sizes'));
+    else showError(els.loadErrorBox, t('err_proxies'));
+  }finally{
+    els.loadBtn.disabled = false;
+    els.loadBtn.textContent = t('btn_load');
+  }
+}
 
 /* ---------- навигация / язык ---------- */
 function switchView(name){
-  ['helper','lua','cfg','job','conflicts'].forEach((v) => {
+  ['helper','lua','cfg','job','conflicts','load'].forEach((v) => {
     const el = $('view-' + v);
     if (el) el.hidden = v !== name;
   });
@@ -2102,7 +2520,16 @@ els.confCopyReport.addEventListener('click', () => {
   if (!conflictIssues.length) return;
   copyText(buildConflictReport(), els.confCopyReport);
 });
-  
+  els.loadBtn.addEventListener('click', () => runLoadEstimate(false));
+els.loadUseLastBtn.addEventListener('click', () => {
+  if (!currentItems.length){ showError(els.loadErrorBox, t('load_no_last')); return; }
+  runLoadEstimate(true);
+});
+els.loadInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') runLoadEstimate(false); });
+els.loadCopyReport.addEventListener('click', () => {
+  if (!lastLoadReport) return;
+  copyText(buildLoadReport(lastLoadReport), els.loadCopyReport);
+});
 </script>
 </body>
 </html>
