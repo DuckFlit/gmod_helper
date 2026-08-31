@@ -139,6 +139,31 @@
   .lua-path{font-size:11.5px;color:var(--text-faint);margin-top:10px;}
   .lua-path code{color:var(--text-dim);background:var(--bg-soft);padding:1px 5px;border-radius:4px;}
 
+
+  /* ---------- conflict checker ---------- */
+  .issue{background:var(--panel-2);border:1px solid var(--border-soft);border-radius:12px;padding:14px 16px;margin-bottom:10px;border-left:3px solid var(--border);}
+  .issue.crit{border-left-color:var(--red);}
+  .issue.warn{border-left-color:var(--yellow);}
+  .issue.info{border-left-color:var(--blue);}
+  .issue-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .issue-icon{font-size:18px;flex:none;width:22px;text-align:center;}
+  .issue-title{font-family:var(--disp);font-size:14px;font-weight:700;color:var(--text);flex:1;}
+  .issue.crit .issue-title{color:#ffb4bb;}
+  .issue.warn .issue-title{color:#ffcf7a;}
+  .issue.info .issue-title{color:#9cc8ff;}
+  .issue-sev{font-size:10px;padding:3px 8px;border-radius:20px;letter-spacing:.4px;text-transform:uppercase;font-family:var(--disp);font-weight:700;}
+  .issue.crit .issue-sev{color:#ffb4bb;background:rgba(255,79,94,.1);border:1px solid rgba(255,79,94,.35);}
+  .issue.warn .issue-sev{color:#ffcf7a;background:rgba(255,207,122,.08);border:1px solid rgba(255,207,122,.35);}
+  .issue.info .issue-sev{color:#9cc8ff;background:rgba(79,163,255,.08);border:1px solid rgba(79,163,255,.35);}
+  .issue-desc{font-size:12.5px;color:var(--text-dim);line-height:1.6;margin-bottom:10px;}
+  .issue-items{display:flex;flex-direction:column;gap:6px;padding:8px 10px;background:var(--bg-soft);border-radius:8px;border:1px solid var(--border-soft);}
+  .issue-item{display:flex;gap:10px;align-items:center;font-size:12px;padding:4px 0;}
+  .issue-item a{color:var(--text);text-decoration:none;}
+  .issue-item a:hover{color:var(--orange);text-decoration:underline;}
+  .issue-item .iid{color:var(--text-faint);font-family:var(--mono);font-size:11px;}
+  .issue-item .isize{color:var(--text-faint);font-family:var(--mono);font-size:11px;margin-left:auto;}
+  .issue-empty{color:var(--text-faint);font-size:12px;padding:20px;text-align:center;border:1px dashed var(--border-soft);border-radius:10px;}
+
   /* ---------- form groups for cfg & job ---------- */
   .form-grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:18px;}
   .form-section{background:var(--panel-2);border:1px solid var(--border-soft);border-radius:12px;padding:16px 18px;}
@@ -194,6 +219,7 @@
     <option value="lua" data-i18n="tool_lua">Workshop.lua</option>
     <option value="cfg" data-i18n="tool_cfg">server.cfg</option>
     <option value="job" data-i18n="tool_job">DarkRP job</option>
+    <option value="conflicts" data-i18n="tool_conflicts">Проверка конфликтов</option>
   </select>
 </div>
 
@@ -212,9 +238,9 @@
         <div class="nav-item" data-view="lua"><span class="dot"></span> <span data-i18n="tool_lua">Workshop.lua генератор</span></div>
         <div class="nav-item" data-view="cfg"><span class="dot"></span> <span data-i18n="tool_cfg">server.cfg генератор</span></div>
         <div class="nav-item" data-view="job"><span class="dot"></span> <span data-i18n="tool_job">DarkRP job генератор</span></div>
-        <div class="nav-item soon"><span class="dot"></span> <span data-i18n="tool_conflicts">Проверка конфликтов</span> <span class="soon-tag" data-i18n="soon">скоро</span></div>
-        <div class="nav-item soon"><span class="dot"></span> <span data-i18n="tool_load">Оценка нагрузки</span> <span class="soon-tag" data-i18n="soon">скоро</span></div>
-      </div>
+        <div class="nav-item" data-view="conflicts"><span class="dot"></span> <span data-i18n="tool_conflicts">Проверка конфликтов</span></div>
+     <div class="nav-item soon"><span class="dot"></span> <span data-i18n="tool_load">Оценка нагрузки</span> <span class="soon-tag" data-i18n="soon">скоро</span></div>
+    </div>
     </div>
 
     <div class="sidebar-foot">
@@ -388,6 +414,62 @@
         </div>
       </div>
     </section>
+    <!-- ============ VIEW 5: CONFLICT CHECKER ============ -->
+<section id="view-conflicts" hidden>
+  <div class="page-head">
+    <div class="eyebrow" data-i18n="eyebrow_conf">Инструмент 05 — Conflict Checker</div>
+    <h1 data-i18n="h1_conf">Проверка конфликтов в коллекции</h1>
+    <p class="lede" data-i18n="lede_conf">Ищу дубликаты, вложенные коллекции, оружейные базы, framework-аддоны и другие типовые конфликты. Если до этого ты уже сканировал коллекцию в Collection Helper — нажми «использовать последний результат».</p>
+  </div>
+
+  <div class="panel">
+    <div class="input-row">
+      <div class="input-wrap">
+        <input id="confInput" type="text" data-i18n-ph="ph_input" placeholder="https://steamcommunity.com/sharedfiles/filedetails/?id=...  или  просто ID" />
+      </div>
+      <button class="btn" id="confBtn" data-i18n="btn_conf">▶ Проверить</button>
+      <button class="btn ghost" id="confUseLastBtn" data-i18n="btn_use_last">использовать последний результат</button>
+    </div>
+
+    <div class="row" style="margin-top:14px;">
+      <label class="chk" style="font-size:12.5px;">
+        <input type="checkbox" id="confDeepChk">
+        <span data-i18n="conf_deep">Углублённая проверка (парсит страницы аддонов — медленно, но находит больше конфликтов по тегам)</span>
+      </label>
+    </div>
+
+    <div class="hint" data-i18n="hint_conf">Базовая проверка выполняется почти мгновенно. Углублённая может занять 1–3 минуты на коллекциях с 200+ аддонами.</div>
+
+    <div class="status-box" id="confStatusBox">
+      <div class="status-line"><span id="confStatusText">…</span><b id="confStatusCount"></b></div>
+      <div class="progress-track"><div class="progress-fill" id="confProgressFill"></div></div>
+    </div>
+    <div class="error-box" id="confErrorBox"></div>
+    <details class="debug"><summary data-i18n="dbg">Журнал отладки</summary><pre class="debuglog"></pre></details>
+  </div>
+
+  <div id="confResults" style="display:none;margin-top:24px;">
+    <div class="stat-grid">
+      <div class="stat"><div class="label" data-i18n="conf_stat_checked">Проверено аддонов</div><div class="value" id="confStatChecked">—</div></div>
+      <div class="stat"><div class="label" data-i18n="conf_stat_crit">Критических</div><div class="value" id="confStatCrit" style="color:var(--red);">0</div></div>
+      <div class="stat"><div class="label" data-i18n="conf_stat_warn">Предупреждений</div><div class="value" id="confStatWarn" style="color:var(--yellow);">0</div></div>
+      <div class="stat"><div class="label" data-i18n="conf_stat_info">Информационных</div><div class="value" id="confStatInfo" style="color:var(--blue);">0</div></div>
+    </div>
+
+    <div class="table-toolbar">
+      <div class="left"><b id="confIssueCount">0</b> <span data-i18n="conf_issues">конфликтов найдено</span></div>
+      <div class="toolbar-actions">
+        <button class="btn ghost" id="confFilterAll" data-i18n="conf_filter_all">Все</button>
+        <button class="btn ghost" id="confFilterCrit" data-i18n="conf_filter_crit">Только критические</button>
+        <button class="btn ghost" id="confCopyReport" data-i18n="btn_copy">Копировать отчёт</button>
+      </div>
+    </div>
+
+    <div id="confIssues"></div>
+
+    <p class="note" data-i18n="conf_note" style="margin-top:20px;">Инструмент ищет только типовые и статические конфликты. Реальные коллизии файлов (одинаковые пути к моделям/звукам) можно проверить только распаковав .gma локально — для этого используй GMAD на сервере.</p>
+  </div>
+</section>
   </main>
 </div>
 
@@ -540,6 +622,36 @@ const L = {
     val_const_dup:'Константа уже используется: ',
     val_cmd_dup:'Команда уже используется: ',
     val_model:'Добавь хотя бы одну модель.',
+        // Conflict checker
+    eyebrow_conf:'Инструмент 05 — Conflict Checker', h1_conf:'Проверка конфликтов в коллекции',
+    lede_conf:'Ищу дубликаты, вложенные коллекции, оружейные базы, framework‑аддоны и другие типовые конфликты. Если до этого ты уже сканировал коллекцию в Collection Helper — нажми «использовать последний результат».',
+    btn_conf:'▶ Проверить', btn_use_last:'использовать последний результат',
+    conf_deep:'Углублённая проверка (парсит страницы аддонов — медленно, но находит больше конфликтов по тегам)',
+    hint_conf:'Базовая проверка выполняется почти мгновенно. Углублённая может занять 1–3 минуты на коллекциях с 200+ аддонами.',
+    conf_stat_checked:'Проверено аддонов', conf_stat_crit:'Критических', conf_stat_warn:'Предупреждений', conf_stat_info:'Информационных',
+    conf_issues:'конфликтов найдено',
+    conf_filter_all:'Все', conf_filter_crit:'Только критические',
+    conf_note:'Инструмент ищет только типовые и статические конфликты. Реальные коллизии файлов (одинаковые пути к моделям/звукам) можно проверить только распаковав .gma локально — для этого используй GMAD на сервере.',
+    conf_status_deep:'Читаю страницы аддонов (теги)…',
+    conf_no_last:'Сначала отсканируй коллекцию в Collection Helper.',
+    conf_no_issues:'Конфликтов не найдено — коллекция чистая ✓',
+    sev_crit:'критический', sev_warn:'предупреждение', sev_info:'инфо',
+    conf_dup_id:'Дубликат ID',
+    conf_dup_id_desc:'В коллекции один и тот же ID встречается несколько раз. Возможно, это разные версии одного аддона или баг Steam.',
+    conf_nested:'Вложенные коллекции',
+    conf_nested_desc:'Аддон сам является коллекцией. Его внутреннее содержимое не подтягивается автоматически — сервер его не увидит. Распакуй коллекцию вручную и добавь отдельные аддоны.',
+    conf_banned:'Забаненные аддоны',
+    conf_banned_desc:'Эти аддоны заблокированы Steam за нарушение правил. Они не будут подгружаться сервером и могут вызывать ошибки в консоли.',
+    conf_unavail:'Нет данных / удалены',
+    conf_unavail_desc:'По этим аддонам Steam не вернул размер. Обычно это скрытые, приватные или удалённые аддоны — сервер их не подгрузит.',
+    conf_multi_base:'Несколько оружейных баз',
+    conf_multi_base_desc:'В коллекции несколько разных оружейных баз. Часто они конфликтуют: одинаковые хуки, общие скрипты, пересекающиеся модели. Лучше оставить одну.',
+    conf_multi_framework:'Много framework‑аддонов',
+    conf_multi_framework_desc:'Несколько аддонов с DarkRP‑модулями/админ‑панелями/чат‑системами одновременно. Часто они конфликтуют за хуки и переменные. Проверь совместимость.',
+    conf_similar:'Похожие названия (возможные клоны)',
+    conf_similar_desc:'Два аддона с почти одинаковыми названиями — вероятно, один является копией/форком другого. Оставь только один.',
+    conf_tag_base:'Конфликт по тегу',
+    conf_tag_base_desc:'Несколько аддонов помечены как "base"/"framework" — они могут переопределять функции друг друга.',
   },
 
   en: {
@@ -683,6 +795,36 @@ const L = {
     val_const_dup:'Constant already used: ',
     val_cmd_dup:'Command already used: ',
     val_model:'Add at least one model.',
+    // Conflict checker
+    eyebrow_conf:'Tool 05 — Conflict Checker', h1_conf:'Collection conflict check',
+    lede_conf:'Finds duplicates, nested collections, weapon bases, framework addons and other common conflicts. If you have already scanned the collection in the Collection Helper, click "use last result".',
+    btn_conf:'▶ Check', btn_use_last:'use last result',
+    conf_deep:'Deep check (parses addon pages — slow but finds more conflicts via tags)',
+    hint_conf:'Basic check is near-instant. Deep check may take 1–3 minutes for collections of 200+ addons.',
+    conf_stat_checked:'Addons checked', conf_stat_crit:'Critical', conf_stat_warn:'Warnings', conf_stat_info:'Informational',
+    conf_issues:'conflicts found',
+    conf_filter_all:'All', conf_filter_crit:'Critical only',
+    conf_note:'The tool only finds common and static conflicts. Real file collisions (same model/sound paths) can only be detected by extracting .gma locally — use GMAD on the server for that.',
+    conf_status_deep:'Reading addon pages (tags)…',
+    conf_no_last:'Scan a collection in Collection Helper first.',
+    conf_no_issues:'No conflicts found — the collection is clean ✓',
+    sev_crit:'critical', sev_warn:'warning', sev_info:'info',
+    conf_dup_id:'Duplicate ID',
+    conf_dup_id_desc:'The same ID appears multiple times. Could be different versions of one addon or a Steam glitch.',
+    conf_nested:'Nested collections',
+    conf_nested_desc:'The addon is itself a collection. Its contents are not auto-pulled — the server won\'t see them. Expand manually and add separate addons.',
+    conf_banned:'Banned addons',
+    conf_banned_desc:'These addons are banned by Steam. They won\'t be loaded by the server and may cause console errors.',
+    conf_unavail:'No data / deleted',
+    conf_unavail_desc:'Steam returned no size for these addons. Usually hidden, private or deleted — the server won\'t load them.',
+    conf_multi_base:'Multiple weapon bases',
+    conf_multi_base_desc:'Several different weapon bases in the collection. They often conflict: shared hooks, common scripts, overlapping models. Best to keep only one.',
+    conf_multi_framework:'Too many framework addons',
+    conf_multi_framework_desc:'Multiple DarkRP modules/admin panels/chat systems at once. They often fight over hooks and variables. Check compatibility.',
+    conf_similar:'Similar names (possible clones)',
+    conf_similar_desc:'Two addons with almost identical names — one is likely a copy/fork of the other. Keep only one.',
+    conf_tag_base:'Tag conflict',
+    conf_tag_base_desc:'Several addons tagged as "base"/"framework" — they may override each other\'s functions.',
   }
 };
 let lang = localStorage.getItem('gsh_lang') || 'ru';
@@ -716,6 +858,13 @@ const els = {
   jobForm: $('jobForm'), jobsList: $('jobsList'), jobPre: $('jobPre'), jobCount: $('jobCount'),
   jobAddBtn: $('jobAddBtn'), jobResetBtn: $('jobResetBtn'), jobCopyBtn: $('jobCopyBtn'), jobDlBtn: $('jobDlBtn'),
   viewSelect: $('viewSelect'), langRu: $('langRu'), langEn: $('langEn'),
+  confInput: $('confInput'), confBtn: $('confBtn'), confUseLastBtn: $('confUseLastBtn'),
+  confDeepChk: $('confDeepChk'),
+  confStatusBox: $('confStatusBox'), confStatusText: $('confStatusText'), confStatusCount: $('confStatusCount'), confProgressFill: $('confProgressFill'),
+  confErrorBox: $('confErrorBox'), confResults: $('confResults'),
+  confStatChecked: $('confStatChecked'), confStatCrit: $('confStatCrit'), confStatWarn: $('confStatWarn'), confStatInfo: $('confStatInfo'),
+  confIssueCount: $('confIssueCount'), confIssues: $('confIssues'),
+  confFilterAll: $('confFilterAll'), confFilterCrit: $('confFilterCrit'), confCopyReport: $('confCopyReport'),
 };
 
 let currentItems = [];
@@ -725,6 +874,8 @@ let luaText = '';
 let cfgText = '';
 let jobText = '';
 let jobs = []; // массив собранных DarkRP джобов
+let conflictIssues = [];
+let conflictFilter = 'all';
 
 function log(msg){
   const line = '[' + new Date().toLocaleTimeString() + '] ' + msg;
@@ -1542,9 +1693,346 @@ function downloadJobs(){
 }
 function copyJobs(){ if (jobs.length) copyText(jobText, els.jobCopyBtn); }
 
+/* ================= Conflict checker ================= */
+const uiConf = () => ({ box: els.confStatusBox, text: els.confStatusText, count: els.confStatusCount, fill: els.confProgressFill });
+
+// Известные конфликтные группы оружейных баз
+const WEAPON_BASES = [
+  { key:'m9k',  rx:/\bm9k\b|\bm9k\s*base|\bm9k\s*spec/i,       name:'M9K' },
+  { key:'tfa',  rx:/\btfa\b|\btfa\s*base/i,                    name:'TFA' },
+  { key:'arccw',rx:/\barccw\b|\barccw\s*base/i,                name:'ArcCW' },
+  { key:'cw2',  rx:/\bcw2\b|\bcw\s*2\.0|\bcustomizable\s*weaponry/i, name:'CW 2.0' },
+  { key:'fas2', rx:/\bfas\s*2|\bfas2/i,                        name:'FA:S 2' },
+  { key:'mw',   rx:/\bmw2\b|\bmw3\b|\bmodern\s*warfare/i,      name:'Modern Warfare' },
+  { key:'hl2rp',rx:/\bhl2rp\b|\bhalflife\s*2\s*rp/i,           name:'HL2 RP' },
+  { key:'sw',   rx:/\bstar\s*wars\s*rp|\bsw\s*rp\b/i,          name:'Star Wars RP' },
+];
+
+const FRAMEWORK_RX = /\bdarkrp\s*module|\bdarkrp\s*modification|\bfadmin\b|\bfchat\b|\buls\b|\bpermaprops\b|\bevolution\s*chat|\bnadmin\b|\blilia\b|\bnutscript\b|\bhelix\b/i;
+
+function normalize(s){
+  return (s || '').toLowerCase().replace(/[\s_\-.,]+/g, ' ').trim();
+}
+
+// Получить теги аддона через IPublishedFileService/GetDetails
+async function fetchAddonDetails(ids, onProgress){
+  const CHUNK = 40;
+  const map = {};
+  let preferred = -1;
+
+  for (let i = 0; i < ids.length; i += CHUNK){
+    const chunk = ids.slice(i, i + CHUNK);
+    const body = new URLSearchParams();
+    chunk.forEach((id) => body.append('publishedfileids[]', id));
+    body.set('includetags', '1');
+    body.set('includeratings', '0');
+    const apiUrl = 'https://api.steampowered.com/IPublishedFileService/GetDetails/v1/';
+
+    const order = preferred >= 0
+      ? [preferred].concat(API_PROXIES.map((_, idx) => idx).filter((idx) => idx !== preferred))
+      : API_PROXIES.map((_, idx) => idx);
+
+    let data = null;
+    for (const idx of order){
+      const p = API_PROXIES[idx];
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 20000);
+      try{
+        log('POST details через ' + p.name + '…');
+        const res = await fetch(p.build(apiUrl), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: body.toString(),
+          signal: ctrl.signal,
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        data = parseJsonLoose(await res.text());
+        if (!data || !data.response) throw new Error('не JSON Steam');
+        preferred = idx;
+        log('ок (' + p.name + ')');
+        break;
+      }catch(err){
+        log('FAIL ' + p.name + ': ' + err.message);
+      }finally{
+        clearTimeout(timer);
+      }
+    }
+    if (data && data.response && data.response.publishedfiledetails){
+      data.response.publishedfiledetails.forEach((d) => { map[String(d.publishedfileid)] = d; });
+    }
+    onProgress(Math.min(i + CHUNK, ids.length), ids.length);
+    await new Promise((r) => setTimeout(r, 250));
+  }
+  return map;
+}
+
+function detectIssues(items, deepDetails){
+  const issues = [];
+
+  // 1. Дубликаты ID
+  const byId = {};
+  items.forEach((it) => {
+    (byId[it.id] = byId[it.id] || []).push(it);
+  });
+  Object.keys(byId).forEach((id) => {
+    if (byId[id].length > 1){
+      issues.push({
+        sev:'crit',
+        key:'dup_id',
+        title: t('conf_dup_id') + ' — ID ' + id,
+        desc: t('conf_dup_id_desc'),
+        items: byId[id],
+      });
+    }
+  });
+
+  // 2. Вложенные коллекции
+  const nested = items.filter((i) => i.status === 'collection');
+  if (nested.length){
+    issues.push({
+      sev:'crit', key:'nested',
+      title: t('conf_nested'),
+      desc: t('conf_nested_desc'),
+      items: nested,
+    });
+  }
+
+  // 3. Забаненные/недоступные
+  const banned = items.filter((i) => i.status === 'banned');
+  if (banned.length){
+    issues.push({
+      sev:'crit', key:'banned',
+      title: t('conf_banned'),
+      desc: t('conf_banned_desc'),
+      items: banned,
+    });
+  }
+  const unavail = items.filter((i) => i.status === 'unavailable');
+  if (unavail.length){
+    issues.push({
+      sev:'warn', key:'unavail',
+      title: t('conf_unavail'),
+      desc: t('conf_unavail_desc'),
+      items: unavail,
+    });
+  }
+
+  // 4. Конфликтующие оружейные базы
+  const baseHits = {};
+  WEAPON_BASES.forEach((b) => { baseHits[b.key] = []; });
+  items.forEach((it) => {
+    const title = normalize(it.title);
+    WEAPON_BASES.forEach((b) => {
+      if (b.rx.test(title)) baseHits[b.key].push(it);
+    });
+  });
+  // если найдено несколько РАЗНЫХ оружейных баз — предупреждение
+  const activeBases = WEAPON_BASES.filter((b) => baseHits[b.key].length > 0);
+  if (activeBases.length >= 2){
+    issues.push({
+      sev:'warn', key:'multi_base',
+      title: t('conf_multi_base'),
+      desc: t('conf_multi_base_desc') + ' ' + activeBases.map((b) => b.name + ' (' + baseHits[b.key].length + ')').join(', '),
+      items: activeBases.flatMap((b) => baseHits[b.key]),
+    });
+  }
+
+  // 5. Framework / модули DarkRP в большом количестве
+  const frameworks = items.filter((i) => FRAMEWORK_RX.test(i.title));
+  if (frameworks.length >= 3){
+    issues.push({
+      sev:'warn', key:'multi_framework',
+      title: t('conf_multi_framework'),
+      desc: t('conf_multi_framework_desc'),
+      items: frameworks,
+    });
+  }
+
+  // 6. Похожие названия (возможные клоны) — LCS или просто вхождение
+  const sorted = items.slice().sort((a,b) => a.title.localeCompare(b.title));
+  const similarGroups = [];
+  for (let i = 0; i < sorted.length; i++){
+    for (let j = i+1; j < sorted.length; j++){
+      const a = normalize(sorted[i].title);
+      const b = normalize(sorted[j].title);
+      if (a.length < 5 || b.length < 5) continue;
+      // если одна строка содержит другую с отличием <= 30%
+      if (a === b) continue;
+      const short = a.length < b.length ? a : b;
+      const long  = a.length < b.length ? b : a;
+      if (long.includes(short) && short.length / long.length > 0.65){
+        similarGroups.push([sorted[i], sorted[j]]);
+      }
+    }
+  }
+  // сгруппируем
+  if (similarGroups.length){
+    const seen = new Set();
+    const merged = [];
+    similarGroups.forEach((pair) => {
+      const key = pair.map((p) => p.id).sort().join('-');
+      if (!seen.has(key)){ seen.add(key); merged.push(pair); }
+    });
+    merged.slice(0, 5).forEach((pair) => {
+      issues.push({
+        sev:'info', key:'similar',
+        title: t('conf_similar'),
+        desc: t('conf_similar_desc'),
+        items: pair,
+      });
+    });
+  }
+
+  // 7. Углублённая проверка — общие теги (если передано)
+  if (deepDetails){
+    const tagGroups = {};
+    Object.keys(deepDetails).forEach((id) => {
+      const d = deepDetails[id];
+      const it = items.find((i) => i.id === id);
+      if (!it) return;
+      const tags = (d.tags || []).map((tg) => tg.tag || tg).filter(Boolean);
+      tags.forEach((tag) => {
+        const k = String(tag).toLowerCase();
+        (tagGroups[k] = tagGroups[k] || []).push(it);
+      });
+    });
+    // ищем теги, связанные с base/framework
+    const baseTags = ['base','framework','weapon base','weapon pack'];
+    baseTags.forEach((bt) => {
+      const matches = tagGroups[bt] || [];
+      if (matches.length >= 2){
+        issues.push({
+          sev:'warn', key:'tag_base',
+          title: t('conf_tag_base') + ' — "' + bt + '"',
+          desc: t('conf_tag_base_desc'),
+          items: matches,
+        });
+      }
+    });
+  }
+
+  return issues;
+}
+
+function renderIssueItem(it){
+  return '<div class="issue-item">' +
+    '<a href="https://steamcommunity.com/sharedfiles/filedetails/?id=' + it.id + '" target="_blank" rel="noopener">' + escapeHtml(it.title) + '</a>' +
+    '<span class="iid">#' + it.id + '</span>' +
+    '<span class="isize">' + bytesToSize(it.size || 0) + '</span>' +
+  '</div>';
+}
+
+function renderIssues(){
+  const filtered = conflictFilter === 'all'
+    ? conflictIssues
+    : conflictIssues.filter((i) => i.sev === conflictFilter);
+
+  if (filtered.length === 0){
+    els.confIssues.innerHTML = '<div class="issue-empty">' + t('conf_no_issues') + '</div>';
+  } else {
+    els.confIssues.innerHTML = filtered.map((i) => {
+      const icon = i.sev === 'crit' ? '⚠' : (i.sev === 'warn' ? '⚡' : 'ℹ');
+      const sevText = i.sev === 'crit' ? t('sev_crit') : (i.sev === 'warn' ? t('sev_warn') : t('sev_info'));
+      return '<div class="issue ' + i.sev + '">' +
+        '<div class="issue-head">' +
+          '<div class="issue-icon">' + icon + '</div>' +
+          '<div class="issue-title">' + escapeHtml(i.title) + '</div>' +
+          '<div class="issue-sev">' + sevText + '</div>' +
+        '</div>' +
+        '<div class="issue-desc">' + escapeHtml(i.desc) + '</div>' +
+        '<div class="issue-items">' + i.items.map(renderIssueItem).join('') + '</div>' +
+      '</div>';
+    }).join('');
+  }
+  els.confIssueCount.textContent = filtered.length;
+}
+
+function renderConfStats(items, issues){
+  els.confStatChecked.textContent = items.length;
+  els.confStatCrit.textContent = issues.filter((i) => i.sev === 'crit').length;
+  els.confStatWarn.textContent = issues.filter((i) => i.sev === 'warn').length;
+  els.confStatInfo.textContent = issues.filter((i) => i.sev === 'info').length;
+}
+
+async function runConflictCheck(useLast){
+  log('=== runConflictCheck, useLast=' + useLast);
+  hideError(els.confErrorBox);
+  els.confResults.style.display = 'none';
+  els.confBtn.disabled = true;
+  els.confBtn.textContent = t('scanning');
+
+  try{
+    let items = [];
+    let collectionId = null;
+    if (useLast && currentItems.length){
+      items = currentItems;
+      collectionId = lastCollectionId;
+      log('использую последний результат (' + items.length + ' аддонов)');
+    } else {
+      collectionId = extractId(els.confInput.value);
+      if (!collectionId){
+        showError(els.confErrorBox, t('err_id'));
+        return;
+      }
+      setStatus(uiConf(), t('status_page'));
+      items = await fetchCollectionItems(collectionId);
+      setStatus(uiConf(), t('status_sizes'), 0, items.length);
+      const sizeMap = await fetchSizes(items.map((i) => i.id), (done, total) => {
+        setStatus(uiConf(), t('status_sizes'), done, total);
+      });
+      items = mergeData(items, sizeMap);
+    }
+
+    let deepDetails = null;
+    if (els.confDeepChk.checked){
+      setStatus(uiConf(), t('conf_status_deep'), 0, items.length);
+      deepDetails = await fetchAddonDetails(items.map((i) => i.id), (done, total) => {
+        setStatus(uiConf(), t('conf_status_deep'), done, total);
+      });
+    }
+
+    conflictIssues = detectIssues(items, deepDetails);
+    // сортировка: crit → warn → info
+    const sevOrder = { crit:0, warn:1, info:2 };
+    conflictIssues.sort((a,b) => sevOrder[a.sev] - sevOrder[b.sev]);
+
+    renderConfStats(items, conflictIssues);
+    renderIssues();
+    els.confStatusBox.classList.remove('show');
+    els.confResults.style.display = 'block';
+    log('проверка завершена, найдено конфликтов: ' + conflictIssues.length);
+  }catch(err){
+    log('ОШИБКА: ' + (err && err.message ? err.message : err));
+    els.confStatusBox.classList.remove('show');
+    if (err.message === 'not_found') showError(els.confErrorBox, t('err_notfound'));
+    else if (err.message === 'empty_collection') showError(els.confErrorBox, t('err_empty'));
+    else if (err.message === 'sizes_unavailable') showError(els.confErrorBox, t('err_sizes'));
+    else showError(els.confErrorBox, t('err_proxies'));
+  }finally{
+    els.confBtn.disabled = false;
+    els.confBtn.textContent = t('btn_conf');
+  }
+}
+
+function buildConflictReport(){
+  const lines = [];
+  lines.push('# GMod Server Helper — Conflict Report');
+  lines.push('# Generated: ' + new Date().toISOString().slice(0,19).replace('T',' '));
+  lines.push('# Total issues: ' + conflictIssues.length);
+  lines.push('');
+  conflictIssues.forEach((i) => {
+    lines.push('## [' + i.sev.toUpperCase() + '] ' + i.title);
+    lines.push(i.desc);
+    i.items.forEach((it) => lines.push(' - ' + it.title + ' (#' + it.id + ')'));
+    lines.push('');
+  });
+  return lines.join('\n');
+}
+  
+
 /* ---------- навигация / язык ---------- */
 function switchView(name){
-  ['helper','lua','cfg','job'].forEach((v) => {
+  ['helper','lua','cfg','job','conflicts'].forEach((v) => {
     const el = $('view-' + v);
     if (el) el.hidden = v !== name;
   });
@@ -1598,6 +2086,23 @@ document.querySelectorAll('thead th[data-key]').forEach((th) => {
     renderTable(currentItems);
   });
 });
+
+els.confBtn.addEventListener('click', () => runConflictCheck(false));
+els.confUseLastBtn.addEventListener('click', () => {
+  if (!currentItems.length){
+    showError(els.confErrorBox, t('conf_no_last'));
+    return;
+  }
+  runConflictCheck(true);
+});
+els.confInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') runConflictCheck(false); });
+els.confFilterAll.addEventListener('click', () => { conflictFilter = 'all'; renderIssues(); });
+els.confFilterCrit.addEventListener('click', () => { conflictFilter = 'crit'; renderIssues(); });
+els.confCopyReport.addEventListener('click', () => {
+  if (!conflictIssues.length) return;
+  copyText(buildConflictReport(), els.confCopyReport);
+});
+  
 </script>
 </body>
 </html>
