@@ -1172,31 +1172,96 @@ async function fetchViaProxy(targetUrl, validate){
 
 async function fetchCollectionItems(collectionId){
   const pageUrl = 'https://steamcommunity.com/sharedfiles/filedetails/?id=' + collectionId;
-  const html = await fetchViaProxy(pageUrl, (txt) => txt.includes('steamcommunity') || txt.includes('workshopItem'));
+
+  const html = await fetchViaProxy(pageUrl, (txt) =>
+    txt.includes('steamcommunity') ||
+    txt.includes('workshopItem') ||
+    txt.includes('collectionItem')
+  );
+
+  const lower = html.toLowerCase();
+
+  if (
+    lower.includes('the specified item does not exist') ||
+    lower.includes('the item you have requested does not exist') ||
+    lower.includes('item not found')
+  ) {
+    throw new Error('not_found');
+  }
+
   const doc = new DOMParser().parseFromString(html, 'text/html');
   const items = [];
   const seen = new Set();
-doc.querySelectorAll('.collectionItemTitle, .workshopItemTitle').forEach((titleEl) => {
-  const a = titleEl.matches('a')
-    ? titleEl
-    : (titleEl.querySelector('a') || titleEl.closest('a'));
 
-  if (!a) return;
-    const href = a.getAttribute('href') || '';
-    const idMatch = href.match(/id=(\d+)/);
-    if (!idMatch) return;
-    const id = idMatch[1];
-    if (id === collectionId || seen.has(id)) return;
+  const add = (id, title, author) => {
+    if (!id || id === collectionId || seen.has(id)) return;
     seen.add(id);
-    let author = '';
-    const container = titleEl.closest('.collectionItem, .workshopItem') || titleEl.parentElement;
-    if (container){
-      const authorLink = container.querySelector('.workshopItemAuthorName a');
-      if (authorLink) author = authorLink.textContent.trim();
-    }
-    items.push({ id, title: titleEl.textContent.trim(), author });
+    items.push({
+      id,
+      title: (title || '').replace(/\s+/g, ' ').trim() || ('Workshop item #' + id),
+      author: (author || '').trim()
+    });
+  };
+
+  const getIdFromHref = (href) => {
+    const m = (href || '').match(/[?&]id=(\d+)/);
+    return m ? m[1] : null;
+  };
+
+  // 1. Основной современный вариант: блоки коллекции
+  doc.querySelectorAll('.collectionItem, .workshopItem, [class*="collectionItem"]').forEach((container) => {
+    const a =
+      container.querySelector('.collectionItemTitle a, .workshopItemTitle a') ||
+      container.querySelector('.collectionItemPreview a[href*="id="]') ||
+      container.querySelector('a[href*="sharedfiles/filedetails/?id="], a[href*="id="]');
+
+    const id = getIdFromHref(a && a.getAttribute ? a.getAttribute('href') : '');
+    if (!id) return;
+
+    const titleEl = container.querySelector('.collectionItemTitle, .workshopItemTitle');
+    const authorEl = container.querySelector(
+      '.collectionItemAuthorName a, .workshopItemAuthorName a, [class*="Author"] a'
+    );
+
+    add(
+      id,
+      titleEl ? titleEl.textContent : (a ? a.textContent : ''),
+      authorEl ? authorEl.textContent : ''
+    );
   });
-  if (items.length === 0) throw new Error('empty_collection');
+
+  // 2. Запасной вариант: если есть только заголовки
+  if (!items.length) {
+    doc.querySelectorAll(
+      '.collectionItemTitle, .workshopItemTitle, [class*="collectionItemTitle"], [class*="workshopItemTitle"]'
+    ).forEach((titleEl) => {
+      const a = titleEl.matches('a')
+        ? titleEl
+        : (titleEl.querySelector('a') || titleEl.closest('a'));
+
+      const id = getIdFromHref(a && a.getAttribute ? a.getAttribute('href') : '');
+      if (!id) return;
+
+      const container =
+        titleEl.closest('.collectionItem, .workshopItem, [class*="collectionItem"]') ||
+        titleEl.parentElement;
+
+      const authorEl = container
+        ? container.querySelector(
+            '.collectionItemAuthorName a, .workshopItemAuthorName a, [class*="Author"] a'
+          )
+        : null;
+
+      add(id, titleEl.textContent, authorEl ? authorEl.textContent : '');
+    });
+  }
+
+  if (!items.length) {
+    log('empty_collection: элементы не найдены. Длина ответа: ' + html.length);
+    log('Первые 700 символов ответа: ' + html.slice(0, 700).replace(/\s+/g, ' '));
+    throw new Error('empty_collection');
+  }
+
   log('найдено аддонов: ' + items.length);
   return items;
 }
