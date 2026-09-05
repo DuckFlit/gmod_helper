@@ -1176,9 +1176,12 @@ async function fetchCollectionItems(collectionId){
   const doc = new DOMParser().parseFromString(html, 'text/html');
   const items = [];
   const seen = new Set();
-  doc.querySelectorAll('.workshopItemTitle').forEach((titleEl) => {
-    const a = titleEl.closest('a');
-    if (!a) return;
+doc.querySelectorAll('.collectionItemTitle, .workshopItemTitle').forEach((titleEl) => {
+  const a = titleEl.matches('a')
+    ? titleEl
+    : (titleEl.querySelector('a') || titleEl.closest('a'));
+
+  if (!a) return;
     const href = a.getAttribute('href') || '';
     const idMatch = href.match(/id=(\d+)/);
     if (!idMatch) return;
