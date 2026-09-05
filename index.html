@@ -1146,6 +1146,15 @@ const PAGE_PROXIES = [
   { name: 'codetabs',   build: (u) => 'https://api.codetabs.com/v1/proxy/?quest=' + encodeURIComponent(u) },
 ];
 
+/* ---------- API для размеров и коллекций: POST ---------- */
+const API_PROXIES = [
+{ name: 'corsproxy',  build: (u) => 'https://corsproxy.io/?url=' + encodeURIComponent(u) },
+{ name: 'allorigins', build: (u) => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
+{ name: 'corsfix',    build: (u) => 'https://proxy.corsfix.com/?url=' + encodeURIComponent(u) },
+];
+if (MY_PROXY) API_PROXIES.unshift({ name: 'my-proxy', build: (u) => MY_PROXY + '/proxy?url=' + encodeURIComponent(u) });
+
+
 async function fetchViaProxy(targetUrl, validate){
   let lastError = null;
   for (const p of PAGE_PROXIES){
@@ -1171,108 +1180,102 @@ async function fetchViaProxy(targetUrl, validate){
 }
 
 async function fetchCollectionItems(collectionId){
-  const pageUrl = 'https://steamcommunity.com/sharedfiles/filedetails/?id=' + collectionId;
-
-  const html = await fetchViaProxy(pageUrl, (txt) =>
-    txt.includes('steamcommunity') ||
-    txt.includes('workshopItem') ||
-    txt.includes('collectionItem')
-  );
-
-  const lower = html.toLowerCase();
-
-  if (
-    lower.includes('the specified item does not exist') ||
-    lower.includes('the item you have requested does not exist') ||
-    lower.includes('item not found')
-  ) {
-    throw new Error('not_found');
+  log('Получаю список аддонов через Steam API (GetCollectionDetails)...');
+  
+  const body = new URLSearchParams();
+  body.set('collectioncount', '1');
+  body.set('publishedfileids[0]', collectionId);
+  
+  const apiUrl = 'https://api.steampowered.com/ISteamRemoteStorage/GetCollectionDetails/v1/';
+  
+  let data = null;
+  for (const p of API_PROXIES){
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 20000);
+    try{
+      log('POST коллекции через ' + p.name + '…');
+      const res = await fetch(p.build(apiUrl), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString(),
+        signal: ctrl.signal,
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      data = parseJsonLoose(await res.text());
+      if (!data || !data.response) throw new Error('не JSON Steam');
+      log('ок (' + p.name + ')');
+      break;
+    }catch(err){
+      log('FAIL ' + p.name + ': ' + err.message);
+    }finally{
+      clearTimeout(timer);
+    }
   }
+  
+  // Если API сработал
+  if (data && data.response && data.response.collectiondetails && data.response.collectiondetails.length){
+    const collection = data.response.collectiondetails[0];
+    
+    if (Number(collection.result) !== 1) {
+      throw new Error('not_found'); // Коллекция удалена, скрыта или не существует
+    }
+    
+    if (collection.children && collection.children.length > 0) {
+      const items = collection.children.map((child) => ({
+        id: String(child.publishedfileid),
+        title: 'Workshop item #' + child.publishedfileid, // Заглушка, позже заменится на реальное название из GetPublishedFileDetails
+        author: ''
+      }));
+      
+      log('найдено аддонов через API: ' + items.length);
+      return items;
+    } else {
+      throw new Error('empty_collection'); // Коллекция существует, но пустая
+    }
+  }
+  
+  // Fallback: если API не сработало, попробуем универсальный парсинг HTML по ссылкам
+  log('API не вернул данные, пробую запасной парсинг HTML...');
+  return await fetchCollectionItemsHTML(collectionId);
+}
 
+// Запасной вариант (универсальный парсер ссылок)
+async function fetchCollectionItemsHTML(collectionId){
+  const pageUrl = 'https://steamcommunity.com/sharedfiles/filedetails/?id=' + collectionId;
+  const html = await fetchViaProxy(pageUrl, (txt) => txt.includes('steamcommunity') || txt.includes('filedetails'));
   const doc = new DOMParser().parseFromString(html, 'text/html');
   const items = [];
   const seen = new Set();
-
-  const add = (id, title, author) => {
-    if (!id || id === collectionId || seen.has(id)) return;
+  
+  // Ищем любые ссылки на аддоны внутри страницы
+  doc.querySelectorAll('a[href*="filedetails/?id="], a[href*="filedetails?id="]').forEach((a) => {
+    const href = a.getAttribute('href') || '';
+    const m = href.match(/[?&]id=(\d+)/);
+    if (!m) return;
+    const id = m[1];
+    if (id === collectionId || seen.has(id)) return;
     seen.add(id);
-    items.push({
-      id,
-      title: (title || '').replace(/\s+/g, ' ').trim() || ('Workshop item #' + id),
-      author: (author || '').trim()
-    });
-  };
-
-  const getIdFromHref = (href) => {
-    const m = (href || '').match(/[?&]id=(\d+)/);
-    return m ? m[1] : null;
-  };
-
-  // 1. Основной современный вариант: блоки коллекции
-  doc.querySelectorAll('.collectionItem, .workshopItem, [class*="collectionItem"]').forEach((container) => {
-    const a =
-      container.querySelector('.collectionItemTitle a, .workshopItemTitle a') ||
-      container.querySelector('.collectionItemPreview a[href*="id="]') ||
-      container.querySelector('a[href*="sharedfiles/filedetails/?id="], a[href*="id="]');
-
-    const id = getIdFromHref(a && a.getAttribute ? a.getAttribute('href') : '');
-    if (!id) return;
-
-    const titleEl = container.querySelector('.collectionItemTitle, .workshopItemTitle');
-    const authorEl = container.querySelector(
-      '.collectionItemAuthorName a, .workshopItemAuthorName a, [class*="Author"] a'
-    );
-
-    add(
-      id,
-      titleEl ? titleEl.textContent : (a ? a.textContent : ''),
-      authorEl ? authorEl.textContent : ''
-    );
+    
+    let title = a.textContent.trim();
+    if (!title || title.length < 3) {
+      const img = a.querySelector('img');
+      if (img && img.getAttribute('alt')) title = img.getAttribute('alt');
+    }
+    if (!title || title.length < 3) {
+      const container = a.closest('div') || a.parentElement;
+      if (container) {
+        const heading = container.querySelector('h1, h2, h3, h4, h5, [class*="title" i], [class*="Title"]');
+        if (heading && heading.textContent.trim().length > 2) title = heading.textContent.trim();
+      }
+    }
+    
+    items.push({ id, title: title || ('Workshop item #' + id), author: '' });
   });
 
-  // 2. Запасной вариант: если есть только заголовки
-  if (!items.length) {
-    doc.querySelectorAll(
-      '.collectionItemTitle, .workshopItemTitle, [class*="collectionItemTitle"], [class*="workshopItemTitle"]'
-    ).forEach((titleEl) => {
-      const a = titleEl.matches('a')
-        ? titleEl
-        : (titleEl.querySelector('a') || titleEl.closest('a'));
-
-      const id = getIdFromHref(a && a.getAttribute ? a.getAttribute('href') : '');
-      if (!id) return;
-
-      const container =
-        titleEl.closest('.collectionItem, .workshopItem, [class*="collectionItem"]') ||
-        titleEl.parentElement;
-
-      const authorEl = container
-        ? container.querySelector(
-            '.collectionItemAuthorName a, .workshopItemAuthorName a, [class*="Author"] a'
-          )
-        : null;
-
-      add(id, titleEl.textContent, authorEl ? authorEl.textContent : '');
-    });
-  }
-
-  if (!items.length) {
-    log('empty_collection: элементы не найдены. Длина ответа: ' + html.length);
-    log('Первые 700 символов ответа: ' + html.slice(0, 700).replace(/\s+/g, ' '));
-    throw new Error('empty_collection');
-  }
-
-  log('найдено аддонов: ' + items.length);
+  if (items.length === 0) throw new Error('empty_collection');
+  log('найдено аддонов через HTML (fallback): ' + items.length);
   return items;
 }
-
-/* ---------- размеры: POST ---------- */
-const API_PROXIES = [
-  { name: 'corsproxy',  build: (u) => 'https://corsproxy.io/?url=' + encodeURIComponent(u) },
-  { name: 'allorigins', build: (u) => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
-  { name: 'corsfix',    build: (u) => 'https://proxy.corsfix.com/?url=' + encodeURIComponent(u) },
-];
-if (MY_PROXY) API_PROXIES.unshift({ name: 'my-proxy', build: (u) => MY_PROXY + '/proxy?url=' + encodeURIComponent(u) });
 
 async function fetchSizes(ids, onProgress){
   const CHUNK = 40;
