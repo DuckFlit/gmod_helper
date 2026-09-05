@@ -1515,7 +1515,15 @@ async function runGen(){
   els.genBtn.textContent = t('generating');
   try{
     setStatus(uiLua, t('status_page'));
-    const items = await fetchCollectionItems(id);
+    const rawItems = await fetchCollectionItems(id);
+
+    // дотягиваем реальные названия через GetPublishedFileDetails
+    setStatus(uiLua, t('status_sizes'), 0, rawItems.length);
+    const sizeMap = await fetchSizes(rawItems.map((i) => i.id), (done, total) => {
+      setStatus(uiLua, t('status_sizes'), done, total);
+    });
+    const items = mergeData(rawItems, sizeMap);
+
     showLua(items, id);
     els.luaStatusBox.classList.remove('show');
     log('lua готов!');
@@ -1524,6 +1532,7 @@ async function runGen(){
     els.luaStatusBox.classList.remove('show');
     if (err.message === 'not_found') showError(els.luaErrorBox, t('err_notfound'));
     else if (err.message === 'empty_collection') showError(els.luaErrorBox, t('err_empty'));
+    else if (err.message === 'sizes_unavailable') showError(els.luaErrorBox, t('err_sizes'));
     else showError(els.luaErrorBox, t('err_proxies'));
   }finally{
     els.genBtn.disabled = false;
